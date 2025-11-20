@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页导航</title>
+    <link rel="icon" href="./images/logo2.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a; /* 暗色背景 */
+            color: white; /* 白色字体 */
+        }
+        .container {
+            text-align: center;
+            background: #2a2a2a; /* 深色容器 */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            transform: translateY(-50px); /* 向上移动容器 */
+            height: auto; /* 确保高度自适应 */
+        }
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 20px;
+            font-size: 36px;
+            color: #e0e0e0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+        .search-box {
+            display: flex; /* 使用 flexbox 使元素并排 */
+            align-items: center; /* 垂直居中对齐 */
+            width: 600px; /* 修改宽度以增大搜索框 */
+        }
+        .custom-select {
+            position: relative;
+            display: inline-block;
+            width: 50px; /* 自定义下拉框宽度 */
+        }
+        .select-selected {
+            background-color: #3a3a3a; /* 选中框背景 */
+            color: white;
+            padding: 10px;
+            border-radius: 5px 0 0 5px; /* 圆角样式 */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            height: 40px; /* 设置高度以与输入框一致 */
+            border: 1px solid #3a3a3a; /* 添加边框 */
+        }
+        .select-items {
+            position: absolute;
+            background-color: #2a2a2a; /* 下拉菜单背景 */
+            border-radius: 5px;
+            z-index: 99;
+            display: none; /* 默认隐藏 */
+            width: 100%;
+        }
+        .select-items div {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .select-items div:hover {
+            background-color: #007bff; /* 悬停效果 */
+        }
+        .icon {
+            width: 20px; /* 图标宽度 */
+            height: 20px; /* 图标高度 */
+            margin-right: 5px; /* 图标与文本间距 */
+        }
+        .search-box input {
+            padding: 10px 10px 10px 0px; /* 减少左侧留出的空间 */
+            font-size: 16px;
+            border: 1px solid #3a3a3a; /* 添加边框 */
+            border-radius: 0 5px 5px 0; /* 圆角样式 */
+            background: #3a3a3a; /* 输入框背景 */
+            color: white;
+            height: 40px; /* 设置高度以与下拉框一致 */
+            flex-grow: 1; /* 使输入框占据剩余空间 */
+            outline: none; /* 去掉点击时的边缘颜色变化 */
+        }
+        .icon-links {
+            display: flex; /* 使用 flexbox 使按钮在一排显示 */
+            justify-content: space-around; /* 均匀分布 */
+            margin-top: 20px; /* 与搜索框的间距 */
+        }
+        .icon-links img {
+            width: 40px; /* 设置图标宽度 */
+            height: auto; /* 自适应高度 */
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                width: 90%; /* 在移动端使用90%宽度 */
+                max-width: none; /* 移除最大宽度限制 */
+                margin: 0 auto; /* 居中对齐 */
+            }
+
+            h1 {
+                font-size: 28px; /* 调整标题字体大小 */
+            }
+
+            .search-box input {
+                font-size: 14px; /* 调整输入框字体大小 */
+            }
+
+            .icon-links {
+                flex-wrap: wrap; /* 允许图标换行 */
+                justify-content: center; /* 居中对齐 */
+            }
+
+            .icon-links img {
+                width: 30px; /* 调整图标大小 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>吴文卓</h1>
+        <div class="search-box">
+            <div class="custom-select" id="searchEngine">
+                <div class="select-selected" data-value="https://www.google.com/search?q=" onclick="toggleDropdown()">
+                    <img src="images/google.png" class="icon" alt="Google">
+                </div>
+                <div class="select-items">
+                    <div data-value="https://www.google.com/search?q=" data-icon="images/google.png">
+                        <img src="images/google.png" class="icon" alt="Google">
+                    </div>
+                    <div data-value="https://www.baidu.com/s?wd=" data-icon="images/baidu.png">
+                        <img src="images/baidu.png" class="icon" alt="百度">
+                    </div>
+                    <div data-value="https://search.yahoo.com/search?p=" data-icon="images/yahoo.png">
+                        <img src="images/yahoo.png" class="icon" alt="Yahoo">
+                    </div>
+                    <div data-value="https://duckduckgo.com/?q=" data-icon="images/duckduckgo.png">
+                        <img src="images/duckduckgo.png" class="icon" alt="DuckDuckGo">
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="searchQuery" placeholder="输入搜索内容" onkeypress="checkEnter(event)" />
+        </div>
+
+        <div class="icon-links">
+            <a href="https://chrome.google.com/webstore" target="_blank">
+                <img src="images/chrome.png" alt="Chrome 应用商店" />
+            </a>
+            <a href="https://www.youtube.com" target="_blank">
+                <img src="images/youtube.png" alt="YouTube" />
+            </a>
+            <a href="https://music.youtube.com" target="_blank">
+                <img src="images/youtubemusic.png" alt="YouTube Music" />
+            </a>
+            <a href="https://www.bilibili.com" target="_blank">
+                <img src="images/bilibili.png" alt="哔哩哔哩" />
+            </a>
+            <a href="https://www.csdn.net" target="_blank">
+                <img src="images/csdn.png" alt="CSDN" />
+            </a>
+            <a href="https://www.x.com" target="_blank">
+                <img src="images/X.png" alt="X" />
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function search() {
+            const selected = document.querySelector('.select-selected');
+            const engine = selected.getAttribute('data-value');
+            const query = document.getElementById('searchQuery').value;
+            if (query) {
+                window.location.href = engine + encodeURIComponent(query);
+            } else {
+                alert('请输入搜索内容');
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                search();
+            }
+        }
+
+        function toggleDropdown() {
+            const items = document.querySelector('.select-items');
+            items.style.display = items.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.querySelectorAll('.select-items div').forEach(item => {
+            item.addEventListener('click', function() {
+                const selected = document.querySelector('.select-selected');
+                const icon = this.querySelector('img').src;
+                const value = this.getAttribute('data-value');
+                selected.innerHTML = `<img src="${icon}" class="icon" alt="Selected">`;
+                selected.setAttribute('data-value', value);
+                toggleDropdown();
+            });
+        });
+
+        // 初始化图标
+        document.querySelector('.select-selected').setAttribute('data-value', 'https://www.google.com/search?q=');
+    </script>
+</body>
+</html>

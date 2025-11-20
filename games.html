@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏集合</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', monospace;
+            background-color: #0a192f;
+            color: #64ffda;
+            overflow: hidden;
+            height: 100vh;
+            cursor: url('data:image/svg+xml;utf8,\
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+                    <path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+                </svg>') 2 2, auto;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            color: #64ffda;
+            text-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64ffda, transparent);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background: rgba(10, 25, 47, 0.7);
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            text-decoration: none;
+            color: #64ffda;
+            text-align: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .game-title {
+            font-size: 24px;
+            margin: 0;
+            color: #64ffda;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #64ffda;
+            border-radius: 8px;
+            color: #64ffda;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+
+            .game-card {
+                padding: 15px;
+            }
+
+            .game-title {
+                font-size: 20px;
+            }
+
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <a href="index.html" class="back-button">返回首页</a>
+    <div class="content">
+        <h1 class="page-title">游戏集合</h1>
+        <div class="games-grid">
+            <a href="tcs.html" class="game-card">
+                <h2 class="game-title">贪吃蛇</h2>
+            </a>
+            <a href="tank.html" class="game-card">
+                <h2 class="game-title">坦克大战</h2>
+            </a>
+            <!-- 可以继续添加更多游戏卡片 -->
+        </div>
+    </div>
+
+    <script>
+        // 粒子动画效果
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = Math.random() * 2;
+                this.alpha = Math.random();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                this.alpha += (Math.random() - 0.5) * 0.01;
+                if (this.alpha <= 0) this.alpha = 0;
+                if (this.alpha >= 1) this.alpha = 1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(100, 255, 218, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        const particles = Array.from({ 
+            length: window.innerWidth < 768 ? 50 : 100 
+        }, () => new Particle());
+
+        function drawLines() {
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(100, 255, 218, ${0.2 * (1 - distance / 100)})`;
+                        ctx.stroke();
+                    }
+                });
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            drawLines();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // 烟花特效
+        function createFirework(x, y) {
+            const particles = [];
+            const particleCount = 30;
+            const colors = ['#64ffda', '#9AECDB', '#26de81'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.borderRadius = '50%';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '1000';
+                document.body.appendChild(particle);
+
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 3 + Math.random() * 3;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+
+                particles.push({
+                    element: particle,
+                    x: x,
+                    y: y,
+                    vx: vx,
+                    vy: vy,
+                    alpha: 1
+                });
+            }
+
+            let frame = 0;
+            const animate = () => {
+                frame++;
+                let isAlive = false;
+
+                particles.forEach(particle => {
+                    if (particle.alpha <= 0) return;
+
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.05;
+                    particle.alpha -= 0.01;
+
+                    particle.element.style.transform = `translate(${particle.x - x}px, ${particle.y - y}px)`;
+                    particle.element.style.opacity = particle.alpha;
+
+                    if (particle.alpha > 0) isAlive = true;
+                });
+
+                if (isAlive && frame < 200) {
+                    requestAnimationFrame(animate);
+                } else {
+                    particles.forEach(particle => {
+                        if (particle.element.parentNode) {
+                            particle.element.parentNode.removeChild(particle.element);
+                        }
+                    });
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName.toLowerCase() === 'a' || 
+                e.target.closest('a')) {
+                return;
+            }
+            createFirework(e.clientX, e.clientY);
+        });
+    </script>
+</body>
+</html> 

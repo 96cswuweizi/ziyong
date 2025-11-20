@@ -1,0 +1,511 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>吴文卓的博客文章</title>
+<link rel="icon" href="./images/logo2.png" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type="text/css">
+body {
+    margin: 0;
+    font-family: 'Microsoft YaHei', 微软雅黑;
+    background-color: #0a192f;
+    color: #8892b0;
+    overflow-x: hidden;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+        </svg>') 2 2, auto;
+}
+
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.content {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+.main-title {
+    text-align: center;
+    color: #ccd6f6;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin: 40px 0;
+    text-shadow: 0 0 10px rgba(204, 214, 246, 0.3);
+    letter-spacing: 2px;
+}
+
+.fl {
+    border: 1px solid #233554;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: rgba(10, 25, 47, 0.7);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.fl:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(35, 53, 84, 0.1);
+}
+
+.fl legend {
+    color: #64ffda;
+    padding: 0 10px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.article-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.article-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #233554;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    background-color: rgba(10, 25, 47, 0.7);
+}
+
+.article-item:hover {
+    transform: translateX(10px);
+    border-color: #64ffda;
+}
+
+.article-title {
+    color: #ccd6f6;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    text-decoration: none;
+    display: block;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+.article-title:hover {
+    color: #64ffda;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" filter="drop-shadow(0 0 2px %2364ffda)" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+.article-meta {
+    font-size: 0.9em;
+    color: #8892b0;
+    margin-bottom: 10px;
+}
+
+.article-excerpt {
+    color: #8892b0;
+    line-height: 1.6;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M8,2 L12,2 L12,4 L13,4 L13,6 L12,6 L12,14 L13,14 L13,16 L12,16 L12,18 L8,18 L8,16 L7,16 L7,14 L8,14 L8,6 L7,6 L7,4 L8,4 Z"/>\
+        </svg>') 10 10, text;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    margin-right: 5px;
+    border-radius: 3px;
+    background-color: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+    font-size: 0.8em;
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin-top: 60px;
+        padding: 10px;
+    }
+    
+    .main-title {
+        font-size: 1.8em;
+        margin: 20px 0;
+    }
+    
+    .article-item {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .article-title {
+        font-size: 1.1em;
+    }
+
+    .article-meta {
+        font-size: 0.8em;
+    }
+
+    .article-excerpt {
+        font-size: 0.9em;
+        line-height: 1.4;
+    }
+
+    .tag {
+        font-size: 0.7em;
+        padding: 1px 6px;
+        margin-right: 4px;
+        margin-bottom: 4px;
+    }
+
+    .fl {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .fl legend {
+        font-size: 18px;
+    }
+
+    .back-home {
+        top: 10px;
+        left: 10px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* 添加更小屏幕的适配 */
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 1.5em;
+    }
+
+    .article-meta span {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .content {
+        margin-top: 50px;
+        padding: 8px;
+    }
+
+    .fl {
+        padding: 12px;
+    }
+}
+
+/* 添加横屏模式适配 */
+@media (max-height: 480px) and (orientation: landscape) {
+    .main-title {
+        margin: 15px 0;
+    }
+
+    .content {
+        max-width: 90%;
+    }
+}
+
+/* 返回主页按钮样式 */
+.back-home {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: inline-block;
+    color: #ccd6f6;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #233554;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    background-color: rgba(10, 25, 47, 0.7);
+    font-size: 14px;
+    z-index: 100;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+.back-home:hover {
+    background-color: rgba(100, 255, 218, 0.1);
+    transform: translateY(-2px);
+    color: #64ffda;
+    border-color: #64ffda;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" filter="drop-shadow(0 0 2px %2364ffda)" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+/* 添加按钮容器样式 */
+.button-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 可点击元素的指针样式 - 手指 */
+a,
+.article-title,
+.back-home,
+button {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+/* 悬停状态的发光效果 */
+a:hover,
+.article-title:hover,
+.back-home:hover,
+button:hover {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" filter="drop-shadow(0 0 2px %2364ffda)" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+/* 文本选择指针 */
+p, li, legend, h1, .article-excerpt, .article-meta {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M8,2 L12,2 L12,4 L13,4 L13,6 L12,6 L12,14 L13,14 L13,16 L12,16 L12,18 L8,18 L8,16 L7,16 L7,14 L8,14 L8,6 L7,6 L7,4 L8,4 Z"/>\
+        </svg>') 10 10, text;
+}
+
+/* 确保所有可点击元素继承指针样式 */
+* {
+    cursor: inherit;
+}
+</style>
+</head>
+
+<body>
+<canvas id="canvas"></canvas>
+<!-- 修改返回按钮 -->
+<a href="index.html" class="back-home">返回主页</a>
+
+<div class="content">
+    <h1 class="main-title">吴文卓的博客文章</h1>
+    
+    <fieldset class="fl">
+        <legend>文章列表</legend>
+        <ul class="article-list">
+            <li class="article-item">
+                <a href="TVbox.html" class="article-title">看剧神器TVBox</a>
+                <div class="article-meta">
+                    <span>发布时间：2024-03-20</span>
+                    <span class="tag">影视</span>
+                    <span class="tag">TVBox</span>
+                    <span class="tag">安卓</span>
+                </div>
+                <div class="article-excerpt">
+                    TVBox是一款强大的视频播放软件，支持在线播放全网影视资源。本文详细介绍TVBox的安装配置方法，包括软件下载、接口设置、使用教程等内容...
+                </div>
+            </li>
+            
+            <li class="article-item">
+                <a href="office2019.html" class="article-title">Office2019批量授权版</a>
+                <div class="article-meta">
+                    <span>发布时间：2024-03-18</span>
+                    <span class="tag">Office</span>
+                    <span class="tag">软件安装</span>
+                    <span class="tag">激活教程</span>
+                </div>
+                <div class="article-excerpt">
+                    详细介绍Office2019批量授权版的下载、安装与激活过程。包括Office部署工具的使用、版本选择、KMS激活方法等，帮助用户轻松完成Office的安装与激活...
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+</div>
+
+<script>
+// 保持与原页面相同的背景动画效果
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+    constructor() {
+        this.reset();
+    }
+
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2;
+        this.life = 1;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        if (this.x < 0 || this.x > canvas.width || 
+            this.y < 0 || this.y > canvas.height) {
+            this.reset();
+        }
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(100, 255, 218, ${this.life * 0.5})`;
+        ctx.fill();
+    }
+}
+
+for (let i = 0; i < 100; i++) {
+    particles.push(new Particle());
+}
+
+function connectParticles() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(100, 255, 218, ${0.2 * (1 - distance/100)})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+    });
+    
+    connectParticles();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+document.addEventListener('mousemove', (e) => {
+    particles.forEach(particle => {
+        const dx = particle.x - e.clientX;
+        const dy = particle.y - e.clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 100) {
+            particle.vx += dx * 0.0002;
+            particle.vy += dy * 0.0002;
+        }
+    });
+});
+
+// 添加点击烟花特效
+function createFirework(x, y) {
+    const particles = [];
+    const particleCount = 30;
+    const colors = ['#64ffda', '#9AECDB', '#26de81'];
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '4px';
+        particle.style.height = '4px';
+        particle.style.borderRadius = '50%';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '1000';
+        document.body.appendChild(particle);
+
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = 3 + Math.random() * 3;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+
+        particles.push({
+            element: particle,
+            x: x,
+            y: y,
+            vx: vx,
+            vy: vy,
+            alpha: 1
+        });
+    }
+
+    let frame = 0;
+    const animate = () => {
+        frame++;
+        let isAlive = false;
+
+        particles.forEach(particle => {
+            if (particle.alpha <= 0) return;
+
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.vy += 0.05; // 添加重力效果
+            particle.alpha -= 0.01;
+
+            particle.element.style.transform = `translate(${particle.x - x}px, ${particle.y - y}px)`;
+            particle.element.style.opacity = particle.alpha;
+
+            if (particle.alpha > 0) isAlive = true;
+        });
+
+        if (isAlive && frame < 200) {
+            requestAnimationFrame(animate);
+        } else {
+            particles.forEach(particle => {
+                if (particle.element.parentNode) {
+                    particle.element.parentNode.removeChild(particle.element);
+                }
+            });
+        }
+    };
+
+    requestAnimationFrame(animate);
+}
+
+// 添加点击事件监听器
+document.addEventListener('click', (e) => {
+    // 忽略点击按钮、链接和其他可交互元素
+    if (e.target.tagName.toLowerCase() === 'a' || 
+        e.target.tagName.toLowerCase() === 'button' ||
+        e.target.classList.contains('back-home') ||
+        e.target.classList.contains('article-title')) {
+        return;
+    }
+    createFirework(e.clientX, e.clientY);
+});
+</script>
+
+</body>
+</html> 

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>坦克大战</title>
+    <style>
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0a192f, #112240);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            margin: 0;
+            background-color: transparent;
+            color: #64ffda;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            color: #64ffda;
+            text-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        #gameControls {
+            width: 100%;
+            padding: 15px 25px;
+            box-sizing: border-box;
+            background-color: rgba(10, 25, 47, 0.8);
+            border-radius: 10px;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            max-width: 800px;
+        }
+
+        .game-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        #energyBar {
+            width: 800px;
+            height: 20px;
+            margin: 10px 0;
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 25, 47, 0.9);
+            padding: 20px 40px;
+            border-radius: 10px;
+            border: 2px solid #64ffda;
+            z-index: 100;
+            display: none;
+            text-align: center;
+        }
+
+        #instructions {
+            width: 800px;
+            box-sizing: border-box;
+            margin-top: 15px;
+            padding: 25px;
+            line-height: 1.6;
+        }
+
+        #score {
+            color: #64ffda;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+            font-family: 'Courier New', monospace;
+        }
+
+        #startButton, #restartButton {
+            font-size: 18px;
+            padding: 15px 30px;
+            background: transparent;
+            color: #64ffda;
+            border: 2px solid #64ffda;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #startButton:hover, #restartButton:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+        }
+
+        #energyFill {
+            height: 100%;
+            background: linear-gradient(90deg, #64ffda, #00b8d4);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+        }
+
+        .key {
+            display: inline-block;
+            padding: 5px 10px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid #64ffda;
+            border-radius: 5px;
+            color: #64ffda;
+            font-weight: bold;
+            margin: 0 3px;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.2);
+        }
+
+        @media (max-width: 850px) {
+            #gameControls, #instructions, #gameCanvas, #energyBar {
+                width: 100%;
+                max-width: 800px;
+            }
+            
+            #gameCanvas {
+                height: auto;  /* 让高度自适应 */
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+        }
+
+        /* 添加返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background: transparent;
+            color: #64ffda;
+            border: 2px solid #64ffda;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+        }
+
+        #mobileControls {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        #joystick-area {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        #joystick-base {
+            width: 100px;
+            height: 100px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 2px solid #64ffda;
+            border-radius: 50%;
+            position: absolute;
+            left: 25px;
+            top: 25px;
+        }
+
+        #joystick-thumb {
+            width: 40px;
+            height: 40px;
+            background: #64ffda;
+            border-radius: 50%;
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            cursor: pointer;
+        }
+
+        #action-buttons {
+            display: flex;
+            gap: 20px;
+            pointer-events: auto;
+        }
+
+        #action-buttons button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(100, 255, 218, 0.1);
+            border: 2px solid #64ffda;
+            color: #64ffda;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 850px) {
+            #mobileControls {
+                display: flex !important;
+            }
+        }
+
+        /* 添加以下样式来防止页面滚动 */
+        @media (max-width: 850px) {
+            html, body {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                touch-action: none;
+            }
+            
+            .container {
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* 修改移动端布局样式 */
+        @media (max-width: 850px) {
+            html, body {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                touch-action: none;
+                margin: 0;
+                padding: 0;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 0;
+                box-sizing: border-box;
+                gap: 10px;
+            }
+
+            .game-title {
+                font-size: 20px;
+                margin: 0;
+                padding: 5px 0;
+                letter-spacing: 2px;
+            }
+
+            #gameControls {
+                width: 100%;
+                padding: 5px 10px;
+                margin: 0;
+                flex-shrink: 0;
+                height: auto;
+                font-size: 14px;
+            }
+
+            .game-section {
+                position: relative;
+                width: 100%;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 5px;
+                min-height: 0; /* 允许内容压缩 */
+            }
+
+            #gameCanvas {
+                width: 100%;
+                height: auto;
+                max-height: 50vh; /* 减小画布最大高度 */
+                aspect-ratio: 4/3;
+                object-fit: contain;
+            }
+
+            #energyBar {
+                width: 100%;
+                height: 10px;
+                margin: 0;
+            }
+
+            #instructions {
+                display: none; /* 移动端隐藏游戏说明 */
+            }
+
+            #mobileControls {
+                position: fixed;
+                bottom: 10px;
+                left: 0;
+                width: 100%;
+                height: 100px; /* 减小控制区域高度 */
+                padding: 0 10px;
+                z-index: 1000;
+            }
+
+            #joystick-area {
+                width: 100px;
+                height: 100px;
+            }
+
+            #joystick-base {
+                width: 70px;
+                height: 70px;
+                left: 15px;
+                top: 15px;
+            }
+
+            #joystick-thumb {
+                width: 25px;
+                height: 25px;
+                left: 22.5px;
+                top: 22.5px;
+            }
+
+            #action-buttons {
+                gap: 10px;
+            }
+
+            #action-buttons button {
+                width: 45px;
+                height: 45px;
+                font-size: 12px;
+            }
+
+            .back-button {
+                top: 5px;
+                left: 5px;
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+
+            #score {
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            #startButton, #restartButton {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            #gameOver {
+                font-size: 16px;
+                padding: 15px 30px;
+            }
+        }
+
+        /* 添加技能按钮样式 */
+        #skillButton {
+            background: rgba(100, 255, 218, 0.2);
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 850px) {
+            #action-buttons {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            #action-buttons button {
+                width: 45px;
+                height: 45px;
+                font-size: 12px;
+                border-radius: 50%;
+                background: rgba(100, 255, 218, 0.1);
+                border: 2px solid #64ffda;
+                color: #64ffda;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <button class="back-button" onclick="window.location.href='games.html'">返回</button>
+    <div class="container">
+        <h1 class="game-title">坦克大战</h1>
+        
+        <div class="game-section">
+            <div id="gameControls">
+                <div>
+                    <button id="startButton">开始游戏</button>
+                    <button id="restartButton" style="display: none;">重新开始</button>
+                </div>
+                <div id="score">得分: 0</div>
+            </div>
+
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            
+            <div id="energyBar"><div id="energyFill"></div></div>
+            <div id="gameOver">游戏结束</div>
+            <div id="mobileControls" style="display: none;">
+                <div id="joystick-area">
+                    <div id="joystick-base">
+                        <div id="joystick-thumb"></div>
+                    </div>
+                </div>
+                <div id="action-buttons">
+                    <button id="shootButton">射击</button>
+                    <button id="skillButton">技能</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="instructions">
+            <h3>游戏说明：</h3>
+            <p>移动：<span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> 控制坦克移动</p>
+            <p>射击：<span class="key">J</span> 发射子弹</p>
+            <p>技能：<span class="key">K</span> 使用特殊技能（需要能量满格）</p>
+            <p>游戏目标：消灭敌方坦克获得分数，注意躲避敌人的子弹！</p>
+            <p>特殊技能：能量满格时可以发动八方向射击，每击败一个敌人获得1格能量。</p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        console.log("脚本开始行");
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('gameOver');
+        const restartButton = document.getElementById('restartButton');
+        const debugElement = document.getElementById('debug');
+        const energyFill = document.getElementById('energyFill');
+        const startButton = document.getElementById('startButton');
+
+        canvas.width = 800;
+        canvas.height = 600;
+
+        let score = 0;
+        let gameIsOver = false;
+        let energy = 0;
+
+        const playerTank = {
+            x: 400,
+            y: 300,
+            angle: 0,
+            speed: 3,
+            width: 40,
+            height: 40
+        };
+
+        let enemies = [];
+        let playerBullets = [];
+        let enemyBullets = [];
+
+        let gameStarted = false;
+
+        function drawTank(tank, isPlayer) {
+            ctx.save();
+            ctx.translate(tank.x, tank.y);
+            ctx.rotate(tank.angle);
+            
+            // 绘制履带
+            ctx.fillStyle = '#1a2f4c';  // 深蓝色履带
+            ctx.fillRect(-tank.width/2 - 5, -tank.height/2, 5, tank.height);
+            ctx.fillRect(tank.width/2, -tank.height/2, 5, tank.height);
+            
+            // 绘制坦克主体
+            ctx.fillStyle = isPlayer ? '#64ffda' : '#ff6b6b';  // 玩家使用主题色，敌人使用红色
+            ctx.fillRect(-tank.width/2, -tank.height/2, tank.width, tank.height);
+            
+            // 绘制坦克顶部装甲
+            ctx.fillStyle = isPlayer ? '#4ac8b0' : '#e64c4c';  // 稍深的主题色
+            const topWidth = tank.width * 0.8;
+            const topHeight = tank.height * 0.8;
+            ctx.fillRect(-topWidth/2, -topHeight/2, topWidth, topHeight);
+            
+            // 制炮塔
+            ctx.beginPath();
+            ctx.arc(0, 0, tank.width/4, 0, Math.PI * 2);
+            ctx.fillStyle = isPlayer ? '#2c7a6b' : '#b33939';  // 更深的主题色
+            ctx.fill();
+            
+            // 修改炮管颜色
+            ctx.fillStyle = isPlayer ? '#a8ffd9' : '#ffa8a8';  // 使用较浅的主题色
+            ctx.fillRect(0, -tank.width/10, tank.width/1.5, tank.width/5);
+            
+            // 添加炮管边缘发光效果
+            ctx.strokeStyle = isPlayer ? '#64ffda66' : '#ff6b6b66';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(0, -tank.width/10, tank.width/1.5, tank.width/5);
+            
+            // 添加发光效果
+            ctx.strokeStyle = isPlayer ? '#64ffda33' : '#ff6b6b33';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(-tank.width/2, -tank.height/2, tank.width, tank.height);
+            
+            ctx.restore();
+        }
+
+        function drawBullets(bullets) {
+            bullets.forEach(bullet => {
+                // 创建子弹发光效果
+                const gradient = ctx.createRadialGradient(
+                    bullet.x, bullet.y, 0,
+                    bullet.x, bullet.y, 6
+                );
+                gradient.addColorStop(0, '#64ffda');
+                gradient.addColorStop(1, '#64ffda00');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(bullet.x, bullet.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 子弹核心
+                ctx.fillStyle = '#64ffda';
+                ctx.beginPath();
+                ctx.arc(bullet.x, bullet.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function updateBullets(bullets) {
+            bullets.forEach(bullet => {
+                bullet.x += Math.cos(bullet.angle) * bullet.speed;
+                bullet.y += Math.sin(bullet.angle) * bullet.speed;
+            });
+            return bullets.filter(bullet => 
+                bullet.x > 0 && bullet.x < canvas.width && 
+                bullet.y > 0 && bullet.y < canvas.height
+            );
+        }
+
+        function spawnEnemy() {
+            if (Math.random() < 0.02 && enemies.length < 5) {
+                // 随机选择从哪个边缘生成（0:上, 1:右, 2:下, 3:左）
+                const side = Math.floor(Math.random() * 4);
+                let x, y, angle;
+                
+                switch(side) {
+                    case 0: // 上边缘
+                        x = Math.random() * canvas.width;
+                        y = -20; // 在画布上方稍微远一点的位置
+                        angle = Math.PI / 2; // 向下移动
+                        break;
+                    case 1: // 右边缘
+                        x = canvas.width + 20;
+                        y = Math.random() * canvas.height;
+                        angle = Math.PI; // 向左移动
+                        break;
+                    case 2: // 下边缘
+                        x = Math.random() * canvas.width;
+                        y = canvas.height + 20;
+                        angle = -Math.PI / 2; // 向上移动
+                        break;
+                    case 3: // 左边缘
+                        x = -20;
+                        y = Math.random() * canvas.height;
+                        angle = 0; // 右移动
+                        break;
+                }
+
+                enemies.push({
+                    x: x,
+                    y: y,
+                    angle: angle,
+                    speed: 1.5,
+                    rotationSpeed: 0.02,
+                    width: 40,
+                    height: 40,
+                    lastShot: 0,
+                    nextDirectionChange: Date.now() + Math.random() * 3000 // 随机设置第一次转向时间
+                });
+            }
+        }
+
+        function updateEnemies() {
+            enemies = enemies.filter(enemy => {
+                // 检查是否需要改变方向
+                if (Date.now() > enemy.nextDirectionChange) {
+                    // 随机选择新的转向角度（-0.5到0.5弧度）
+                    enemy.angle += (Math.random() - 0.5) * Math.PI / 2;
+                    // 设置下一次改变方向的时间（1-3秒后）
+                    enemy.nextDirectionChange = Date.now() + 1000 + Math.random() * 2000;
+                }
+
+                // 更新位置
+                enemy.x += Math.cos(enemy.angle) * enemy.speed;
+                enemy.y += Math.sin(enemy.angle) * enemy.speed;
+
+                // 检查是否离开画布
+                const isOutOfBounds = 
+                    enemy.x < -50 || 
+                    enemy.x > canvas.width + 50 || 
+                    enemy.y < -50 || 
+                    enemy.y > canvas.height + 50;
+
+                // 发射子弹
+                if (!isOutOfBounds && Date.now() - enemy.lastShot > 2000) {
+                    enemyBullets.push({
+                        x: enemy.x,
+                        y: enemy.y,
+                        angle: enemy.angle,
+                        speed: 5
+                    });
+                    enemy.lastShot = Date.now();
+                }
+
+                return !isOutOfBounds;
+            });
+        }
+
+        function checkCollisions() {
+            playerBullets = playerBullets.filter(bullet => {
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    if (isColliding(bullet, enemies[i])) {
+                        enemies.splice(i, 1);
+                        score += 10;
+                        energy = Math.min(energy + 1, 5);
+                        updateScore();
+                        updateEnergyBar();
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            enemyBullets = enemyBullets.filter(bullet => {
+                if (isColliding(bullet, playerTank)) {
+                    gameOver();
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function isColliding(bullet, tank) {
+            return bullet.x > tank.x - tank.width / 2 &&
+                   bullet.x < tank.x + tank.width / 2 &&
+                   bullet.y > tank.y - tank.height / 2 &&
+                   bullet.y < tank.y + tank.height / 2;
+        }
+
+        function gameOver() {
+            gameIsOver = true;
+            gameOverElement.textContent = `游戏结束 - 最终得分: ${score}`;
+            gameOverElement.style.display = 'block';
+            restartButton.style.display = 'block';
+        }
+
+        function updateEnergyBar() {
+            energyFill.style.width = `${(energy / 5) * 100}%`;
+        }
+
+        // 添加技能按钮事件处理
+        const skillButton = document.getElementById('skillButton');
+        
+        skillButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            useSpecialSkill();
+        }, { passive: false });
+
+        // 修改 useSpecialSkill 函数，添加冷却检查
+        let lastSkillTime = 0;
+        const SKILL_COOLDOWN = 1000; // 技能冷却时间（毫秒）
+
+        function useSpecialSkill() {
+            const now = Date.now();
+            if (energy === 5 && now - lastSkillTime >= SKILL_COOLDOWN) {
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    playerBullets.push({
+                        x: playerTank.x,
+                        y: playerTank.y,
+                        angle: angle,
+                        speed: 7
+                    });
+                }
+                energy = 0;
+                updateEnergyBar();
+                lastSkillTime = now;
+
+                // 添加技能按钮视觉反馈
+                skillButton.style.opacity = '0.5';
+                setTimeout(() => {
+                    skillButton.style.opacity = '1';
+                }, SKILL_COOLDOWN);
+            }
+        }
+
+        const keys = {};
+
+        document.addEventListener('keydown', (event) => {
+            keys[event.key] = true;
+            if (event.key === 'k') {
+                useSpecialSkill();
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            keys[event.key] = false;
+        });
+
+        function updatePlayerTank() {
+            let dx = 0;
+            let dy = 0;
+
+            if (keys['w']) dy -= playerTank.speed;
+            if (keys['s']) dy += playerTank.speed;
+            if (keys['a']) dx -= playerTank.speed;
+            if (keys['d']) dx += playerTank.speed;
+
+            if (dx !== 0 || dy !== 0) {
+                playerTank.angle = Math.atan2(dy, dx);
+                playerTank.x += dx;
+                playerTank.y += dy;
+
+                playerTank.x = Math.max(0, Math.min(canvas.width, playerTank.x));
+                playerTank.y = Math.max(0, Math.min(canvas.height, playerTank.y));
+            }
+
+            if (keys['j']) {
+                playerBullets.push({
+                    x: playerTank.x + Math.cos(playerTank.angle) * 20,
+                    y: playerTank.y + Math.sin(playerTank.angle) * 20,
+                    angle: playerTank.angle,
+                    speed: 7
+                });
+                keys['j'] = false; // 防止连续射击
+            }
+        }
+
+        function startGame() {
+            gameStarted = true;
+            startButton.style.display = 'none';
+            resizeCanvas();
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (gameIsOver || !gameStarted) return;
+            
+            updatePlayerTank();
+            
+            // 使用深色背景
+            ctx.fillStyle = '#0a192f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 添加网格效果
+            ctx.strokeStyle = '#112240';
+            ctx.lineWidth = 1;
+            const gridSize = 40;
+            for(let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for(let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            drawTank(playerTank, true);
+            enemies.forEach(enemy => drawTank(enemy, false));
+            drawBullets(playerBullets);
+            drawBullets(enemyBullets);
+            
+            playerBullets = updateBullets(playerBullets);
+            enemyBullets = updateBullets(enemyBullets);
+            updateEnemies();
+            spawnEnemy();
+            checkCollisions();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function restartGame() {
+            score = 0;
+            energy = 0;
+            gameIsOver = false;
+            gameStarted = true;
+            playerTank.x = 400;
+            playerTank.y = 300;
+            playerTank.angle = 0;
+            enemies = [];
+            playerBullets = [];
+            enemyBullets = [];
+            scoreElement.textContent = "得分: 0";
+            gameOverElement.style.display = 'none';
+            restartButton.style.display = 'none';
+            startButton.style.display = 'none';
+            updateEnergyBar();
+            gameLoop();
+        }
+
+        function updateScore() {
+            scoreElement.textContent = `得分: ${score}`;
+            scoreElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                scoreElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', restartGame);
+
+        console.log("等待游戏开始");
+
+        // 初始化粒子背景
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#64ffda" },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#64ffda",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    outModes: { default: "bounce" },
+                    attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                }
+            },
+            interactivity: {
+                detectsOn: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // 添加点击烟花效果
+        function createFirework(x, y) {
+            const particles = [];
+            const particleCount = 30;
+            const colors = ['#64ffda', '#9AECDB', '#26de81'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.borderRadius = '50%';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '1000';
+                document.body.appendChild(particle);
+
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 3 + Math.random() * 3;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+
+                particles.push({
+                    element: particle,
+                    x: x,
+                    y: y,
+                    vx: vx,
+                    vy: vy,
+                    alpha: 1
+                });
+            }
+
+            let frame = 0;
+            const animate = () => {
+                frame++;
+                let isAlive = false;
+
+                particles.forEach(particle => {
+                    if (particle.alpha <= 0) return;
+
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.05; // 添加重力效果
+                    particle.alpha -= 0.01;
+
+                    particle.element.style.transform = `translate(${particle.x - x}px, ${particle.y - y}px)`;
+                    particle.element.style.opacity = particle.alpha;
+
+                    if (particle.alpha > 0) isAlive = true;
+                });
+
+                if (isAlive && frame < 200) {
+                    requestAnimationFrame(animate);
+                } else {
+                    particles.forEach(particle => {
+                        if (particle.element.parentNode) {
+                            particle.element.parentNode.removeChild(particle.element);
+                        }
+                    });
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
+        // 添加点击事件监听器
+        document.addEventListener('click', (e) => {
+            // 检查点击元素是否是按钮、游戏画布或控制区域
+            if (e.target.tagName.toLowerCase() === 'button' || 
+                e.target.id === 'gameCanvas' ||
+                e.target.closest('#gameControls') ||
+                e.target.classList.contains('control-btn')) {
+                return;
+            }
+            createFirework(e.clientX, e.clientY);
+        });
+
+        // 检测是否为移动设备
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.getElementById('mobileControls').style.display = 'flex';
+        }
+
+        // 虚拟摇杆控制
+        const joystickThumb = document.getElementById('joystick-thumb');
+        const joystickBase = document.getElementById('joystick-base');
+        let isDragging = false;
+        let startX, startY;
+        let currentX, currentY;
+
+        let activePointers = new Map(); // 跟踪多点触控
+
+        joystickThumb.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            activePointers.set('joystick', touch.identifier);
+            isDragging = true;
+            const baseRect = joystickBase.getBoundingClientRect();
+            startX = baseRect.left + baseRect.width/2;
+            startY = baseRect.top + baseRect.height/2;
+            
+            joystickThumb.style.left = '30px';
+            joystickThumb.style.top = '30px';
+        }, { passive: false });
+
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            // 只处理摇杆的触摸点
+            const joystickId = activePointers.get('joystick');
+            const touch = Array.from(e.touches).find(t => t.identifier === joystickId);
+            
+            if (isDragging && touch) {
+                const baseRect = joystickBase.getBoundingClientRect();
+                const centerX = baseRect.left + baseRect.width/2;
+                const centerY = baseRect.top + baseRect.height/2;
+                
+                const dx = touch.clientX - centerX;
+                const dy = touch.clientY - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = baseRect.width/2 - 20; // 摇杆最大移动范围
+                
+                // 限制摇杆移动范围
+                let moveX = dx;
+                let moveY = dy;
+                if (distance > maxDistance) {
+                    const angle = Math.atan2(dy, dx);
+                    moveX = Math.cos(angle) * maxDistance;
+                    moveY = Math.sin(angle) * maxDistance;
+                }
+                
+                // 更新摇杆位置
+                joystickThumb.style.left = (baseRect.width/2 - 20 + moveX) + 'px';
+                joystickThumb.style.top = (baseRect.height/2 - 20 + moveY) + 'px';
+                
+                // 更新坦克移动
+                if (distance > 10) { // 添加死区，防止微小移动
+                    const angle = Math.atan2(dy, dx);
+                    playerTank.angle = angle;
+                    const moveSpeed = Math.min(distance / maxDistance, 1) * playerTank.speed;
+                    
+                    const newX = playerTank.x + Math.cos(angle) * moveSpeed;
+                    const newY = playerTank.y + Math.sin(angle) * moveSpeed;
+                    
+                    // 确保坦克不会移出画布
+                    playerTank.x = Math.max(playerTank.width/2, Math.min(canvas.width - playerTank.width/2, newX));
+                    playerTank.y = Math.max(playerTank.height/2, Math.min(canvas.height - playerTank.height/2, newY));
+                }
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            const joystickId = activePointers.get('joystick');
+            const touchEnded = Array.from(e.changedTouches).find(t => t.identifier === joystickId);
+            
+            if (touchEnded) {
+                isDragging = false;
+                activePointers.delete('joystick');
+                joystickThumb.style.left = '30px';
+                joystickThumb.style.top = '30px';
+            }
+        });
+
+        // 修改射击按钮的事件处理
+        const shootButton = document.getElementById('shootButton');
+        let lastShootTime = 0;
+        const SHOOT_COOLDOWN = 250; // 射击冷却时间（毫秒）
+
+        shootButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            activePointers.set('shoot', touch.identifier);
+            
+            // 只射击一次
+            shoot();
+        }, { passive: false });
+
+        shootButton.addEventListener('touchend', (e) => {
+            const shootId = activePointers.get('shoot');
+            const touchEnded = Array.from(e.changedTouches).find(t => t.identifier === shootId);
+            
+            if (touchEnded) {
+                activePointers.delete('shoot');
+            }
+        });
+
+        function shoot() {
+            const now = Date.now();
+            if (now - lastShootTime >= SHOOT_COOLDOWN) {
+                playerBullets.push({
+                    x: playerTank.x + Math.cos(playerTank.angle) * 20,
+                    y: playerTank.y + Math.sin(playerTank.angle) * 20,
+                    angle: playerTank.angle,
+                    speed: 7
+                });
+                lastShootTime = now;
+            }
+        }
+
+        // 在游戏开始时调整画布大小
+        function resizeCanvas() {
+            if (isMobile) {
+                const containerWidth = document.querySelector('.game-section').offsetWidth;
+                canvas.width = containerWidth;
+                canvas.height = containerWidth * 0.75; // 保持4:3的比例
+                
+                // 更新玩家坦克位置到新的中心点
+                playerTank.x = canvas.width / 2;
+                playerTank.y = canvas.height / 2;
+            }
+        }
+
+        // 添加窗口大小改变事件监听
+        window.addEventListener('resize', resizeCanvas);
+
+        // 添加触摸事件处理
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>

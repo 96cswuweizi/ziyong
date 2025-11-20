@@ -1,0 +1,612 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>吴文卓自用工具网</title>
+<link rel="icon" href="./images/logo2.png" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+  body {
+    margin: 0;
+    font-family: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+    color: #8892b0;
+    line-height: 1.3;
+    background: #0a192f;
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+        </svg>') 2 2, auto;
+  }
+  .content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 100px 20px;
+  }
+  .logo {
+    max-width: 100%;
+    height: auto;
+    margin-top: 50px;
+  }
+  .fl {
+    position: relative;
+    border: 1px solid #233554;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  .link-container {
+    position: relative;
+    z-index: 2;
+  }
+  .fl p {
+    position: relative;
+    z-index: 3;
+  }
+  .fl a {
+    color: #64ffda;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+  .fl a:hover {
+    opacity: 0.8;
+  }
+  legend {
+    color: #64ffda;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 0 10px;
+    text-align: center;
+  }
+  
+  ol {
+    padding-left: 20px;
+    margin: 15px 0;
+  }
+  ol li {
+    color: #8892b0 !important;
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+  body, td, th {
+    font-family: "Microsoft YaHei", "微软雅黑", Tahoma, "Lucida Grande", Arial, sans-serif;
+  }
+  .STYLE1 {
+    width: 100%;
+    margin: 0 auto;
+    color: #FFFFFF;
+  }
+  .STYLE2 {
+    color: #FFFFFF;
+  }
+  .fl a{
+      text-decoration: none; /* 去掉下划线 */
+      color: #64ffda; /* 自定义颜色 */
+  }
+  
+  .fl a:hover{
+      color: #64ffda; /* 悬停时颜色 */
+  }
+
+/* 小图样式 */
+.small-image {
+  width: 700px; /* 设置缩略图的宽度 */
+  cursor: pointer;
+  margin: 20px 0;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  border: 1px solid #233554;
+}
+.small-image:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(100, 255, 218, 0.1);
+}
+/* 弹出大图的背景样式 */
+.modal {
+  display: none; /* 初始时隐藏 */
+  position: fixed; 
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 25, 47, 0.95);
+}
+/* 大图样式 */
+.modal-content {
+  margin: auto;
+  display: block;
+  max-width: 80%;
+  border-radius: 4px;
+  border: 1px solid #233554;
+}
+/* 关闭按钮样式 */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #64ffda;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.close:hover {
+  color: #8892b0;
+}
+
+/* 响应式样式 */
+@media (max-width: 600px) {
+  body {
+      margin: 0;
+      font-size: 14px;
+  }
+  .content {
+      padding: 20px;
+  }
+  .small-image {
+      width: 100%;
+      margin: 10px 0;
+  }
+  .fl {
+      margin: 15px 0;
+  }
+}
+
+/* 添加 canvas 样式 */
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* 在现有样式中添加 */
+.main-title {
+    color: #ccd6f6;
+    text-align: center;  /* 只让这几个字居中 */
+    width: 100%;  /* 确保宽度占满以便居中 */
+    display: block;  /* 块级显示以确保居中效果 */
+}
+
+/* 添加简单的下划线悬停效果 */
+.fl a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: #64ffda;
+    transition: width 0.3s ease;
+}
+
+.fl a:hover::after {
+    width: 100%;
+}
+
+/* 基础指针样式 - 三角箭头 */
+body {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+        </svg>') 2 2, auto;
+}
+
+/* 可点击元素的指针样式 - 手指 */
+a,
+button,
+.close,
+.small-image {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+/* 代码块的文本选择指针 */
+div[style*="background-color:#233554"] {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+            <path fill="%2364ffda" d="M8,2 L12,2 L12,4 L13,4 L13,6 L12,6 L12,14 L13,14 L13,16 L12,16 L12,18 L8,18 L8,16 L7,16 L7,14 L8,14 L8,6 L7,6 L7,4 L8,4 Z"/>\
+        </svg>') 10 10, text !important;
+}
+
+/* 悬停状态的发光效果 */
+a:hover,
+button:hover,
+.close:hover,
+.small-image:hover {
+    cursor: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+            <path fill="%2364ffda" filter="drop-shadow(0 0 2px %2364ffda)" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+        </svg>') 1 1, pointer !important;
+}
+
+/* 返回按钮样式 */
+.back-home {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid #ccd6f6;
+    border-radius: 4px;
+    color: #ccd6f6;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-home:hover {
+    background-color: rgba(100, 255, 218, 0.1);
+    transform: translateY(-2px);
+}
+
+/* 更新移动端媒体查询 */
+@media screen and (max-width: 768px) {
+    /* 基础样式调整 */
+    body {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* 内容区域调整 */
+    .content {
+        padding: 20px 15px;
+        margin: 0;
+    }
+
+    /* 标题调整 */
+    .main-title {
+        font-size: 1.5em;
+        margin: 20px 0;
+    }
+
+    /* 返回按钮调整 */
+    .back-home {
+        top: 10px;
+        left: 10px;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+
+    /* 字段集合调整 */
+    .fl {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .fl legend {
+        font-size: 16px;
+    }
+
+    /* 列表样式调整 */
+    ol {
+        padding-left: 15px;
+    }
+
+    ol li {
+        font-size: 13px;
+        margin: 8px 0;
+    }
+
+    /* 代码块调整 */
+    div[style*="background-color:#233554"] {
+        padding: 10px;
+        margin: 10px 0;
+        overflow-x: auto;
+    }
+
+    div[style*="background-color:#233554"] p {
+        font-size: 12px;
+        line-height: 1.4;
+        margin: 5px 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /* 链接样式调整 */
+    .fl a {
+        display: inline-block;
+        margin: 5px 0;
+        font-size: 13px;
+    }
+
+    /* 段落调整 */
+    .fl p {
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 8px 0;
+    }
+
+    /* 标题调整 */
+    h3 {
+        font-size: 15px;
+        margin: 15px 0 10px;
+    }
+
+    /* 模态框调整 */
+    .modal {
+        padding-top: 50px;
+    }
+
+    .modal-content {
+        max-width: 95%;
+    }
+
+    .close {
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+    }
+}
+
+/* 超小屏幕额外调整 */
+@media screen and (max-width: 320px) {
+    body {
+        font-size: 13px;
+    }
+
+    .main-title {
+        font-size: 1.3em;
+    }
+
+    .fl legend {
+        font-size: 14px;
+    }
+
+    div[style*="background-color:#233554"] p {
+        font-size: 11px;
+    }
+}
+</style>
+
+
+<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body>
+<canvas id="canvas"></canvas>
+<a href="blog.html" class="back-home">返回博客</a>
+<div class="content">
+  <h1 class="main-title">吴文卓自用工具集合</h1>
+  <div class="STYLE1">
+    <fieldset class="fl">
+      <legend style="color: #64ffda;">使用说明</legend>
+      <ol type="1">
+        <li class="STYLE2">以下为吴文卓专用工具大全，所有工具仅供学习使用.</li>
+        <li class="STYLE2">未经允许不得转载或商用，否则所产生的一切纠纷与责任均与本人无关.</li>
+        <li class="STYLE2">本站由吴文龙提供网站支持.</li>
+        <li class="STYLE2">如存在提取密码：123或1234</li>
+      </ol>
+    </fieldset>
+    <fieldset class="fl">
+      <legend style="color: #64ffda;">office2019批量授权版</legend>
+      <h3>安装</h3>
+      <p>1. office 软件部署工具：<a href="https://www.microsoft.com/en-us/download/details.aspx?id=49117">下载链接</a></p>
+      <p>2. office 版本自定义工具：<a href="https://config.office.com/deploymentsettings">下载链接</a></p>
+      <p>3. 基于KMS的 GVLK：<a href="https://learn.microsoft.com/zh-cn/deployoffice/vlactivation/gvlks">下载链接</a></p>
+      <p>4. 通过官方下载安装批量授权版：</p>
+      <h3>下载命令：</h3>
+      <p>setup /download config.xml</p>
+      <h3>安装命令:</h3>
+      <p>setup /configure config.xml</p>
+      <h3>KMS激活Office</h3>
+      <p>使用管理员打开终端或者cmd，并切换目录到C:\Program Files\Microsoft Office\Office16</p>
+      <p>32位Office在C:\Program Files (x86)\Microsoft Office\Office16\</p>
+      <div style="background-color:#233554;border: 2px solid #233554;margin-bottom: 100px;border-radius: 5px;">
+          <p style="margin-left: 10px">cd 'C:\Program Files\Microsoft Office\Office16\'</p>
+          <p style="margin-left: 10px"># 查看状态信息</p>
+          <p style="margin-left: 10px">cscript ospp.vbs /dstatus</p>
+          <p style="margin-left: 10px"># 卸载原本的激活码【xxxxx为密钥后五位】（本文不需要卸载原本的激活码）</p>
+          <p style="margin-left: 10px">cscript ospp.vbs /unpkey:xxxxx</p>
+          <p style="margin-left: 10px"># 设置激活码（不同版本激活码不同，本文在配置文件中已经注入专业增强版的批量密钥，不需要再次设置激活码）</p>
+          <p style="margin-left: 10px">cscript ospp.vbs /inpkey:xxxxx-xxxxx-xxxxx-xxxxx</p>
+          <p style="margin-left: 10px"># 设置激活服务器</p>
+          <p style="margin-left: 10px">cscript ospp.vbs /sethst:kms.03k.org</p>
+          <p style="margin-left: 10px"># 激活</p>
+          <p style="margin-left: 10px">cscript ospp.vbs /act</p>
+      </div>
+    
+    </fieldset>
+  </div>
+</div>
+
+<script>
+  window.onload = function() {
+    // 获取模态框和大图
+    var modal = document.getElementById("myModal");
+    var modalImg = document.getElementById("imgModal");
+    var closeBtn = document.getElementsByClassName("close")[0];
+
+    // 点击小图，显示模态框
+    document.querySelectorAll('.small-image').forEach(function(img) {
+      img.onclick = function() {
+        modal.style.display = "block";
+        modalImg.src = this.src; // 使用同一张图的路径
+      }
+    });
+
+    // 点击关闭按钮，隐藏模态框
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+  }
+
+  // 粒子动画效果
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  function setCanvasSize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  setCanvasSize();
+  window.addEventListener('resize', setCanvasSize);
+
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = (Math.random() - 0.5) * 2;
+      this.radius = Math.random() * 2;
+      this.alpha = Math.random();
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+      this.alpha += (Math.random() - 0.5) * 0.01;
+      if (this.alpha <= 0) this.alpha = 0;
+      if (this.alpha >= 1) this.alpha = 1;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(100, 255, 218, ${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  const particles = Array.from({ length: 100 }, () => new Particle());
+
+  function drawLines() {
+    particles.forEach((p1, i) => {
+      particles.slice(i + 1).forEach(p2 => {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 100) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(100, 255, 218, ${0.2 * (1 - distance / 100)})`;
+          ctx.stroke();
+        }
+      });
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+
+    drawLines();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  canvas.addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    particles.push(new Particle());
+    if (particles.length > 100) {
+      particles.shift();
+    }
+  });
+
+  // 添加点击烟花特效
+  function createFirework(x, y) {
+    const particles = [];
+    const particleCount = 30;
+    const colors = ['#64ffda', '#9AECDB', '#26de81'];
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '4px';
+        particle.style.height = '4px';
+        particle.style.borderRadius = '50%';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '1000';
+        document.body.appendChild(particle);
+
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = 3 + Math.random() * 3;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+
+        particles.push({
+            element: particle,
+            x: x,
+            y: y,
+            vx: vx,
+            vy: vy,
+            alpha: 1
+        });
+    }
+
+    let frame = 0;
+    const animate = () => {
+        frame++;
+        let isAlive = false;
+
+        particles.forEach(particle => {
+            if (particle.alpha <= 0) return;
+
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.vy += 0.05; // 添加重力效果
+            particle.alpha -= 0.01;
+
+            particle.element.style.transform = `translate(${particle.x - x}px, ${particle.y - y}px)`;
+            particle.element.style.opacity = particle.alpha;
+
+            if (particle.alpha > 0) isAlive = true;
+        });
+
+        if (isAlive && frame < 200) {
+            requestAnimationFrame(animate);
+        } else {
+            particles.forEach(particle => {
+                if (particle.element.parentNode) {
+                    particle.element.parentNode.removeChild(particle.element);
+                }
+            });
+        }
+    };
+
+    requestAnimationFrame(animate);
+  }
+
+  // 添加点击事件监听器
+  document.addEventListener('click', (e) => {
+    // 忽略点击按钮、链接和其他可交互元素
+    if (e.target.tagName.toLowerCase() === 'a' || 
+        e.target.tagName.toLowerCase() === 'button' ||
+        e.target.classList.contains('close') ||
+        e.target.classList.contains('small-image') ||
+        e.target.closest('div[style*="background-color:#233554"]')) {
+        return;
+    }
+    createFirework(e.clientX, e.clientY);
+  });
+</script>
+</body>
+</html>

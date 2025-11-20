@@ -1,0 +1,1204 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>吴文卓自用工具网</title>
+<link rel="icon" href="./images/logo2.png" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type="text/css">
+	body {
+		background-color: #FFFFFF;
+		margin: 40px auto;
+		font-family: 'Microsoft YaHei', 微软雅黑, Tahoma, 'Lucida Grande', Arial, sans-serif;
+		font-size: 16px;
+		background:center top no-repeat;
+		background-color: #1d0d0d;
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+				<path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+			</svg>') 2 2, auto;
+	}
+
+	#songSelector {
+		border-radius: 5px;
+		height: 30px;
+		width: auto;
+	}
+	
+	/* 使搜索框部分居中 */
+	.search-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 20px 0;
+	}
+	
+	#searchBar {
+		background-color: transparent;
+		border: 1px solid #233554;
+		color: #8892b0;
+		padding: 12px 15px;
+		border-radius: 4px;
+		font-size: 14px;
+		width: 300px;
+		transition: all 0.3s ease;
+		caret-color: #64ffda;
+		caret-shape: block;
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+				<path fill="%2364ffda" d="M8,2 L12,2 L12,4 L13,4 L13,6 L12,6 L12,14 L13,14 L13,16 L12,16 L12,18 L8,18 L8,16 L7,16 L7,14 L8,14 L8,6 L7,6 L7,4 L8,4 Z"/>\
+			</svg>') 10 10, text !important;
+	}
+
+	#searchBar:hover {
+		border-color: #64ffda;
+	}
+
+	#searchBar:focus {
+		border-color: #64ffda;
+		outline: none;
+		background-color: rgba(17, 34, 64, 0.1);
+		box-shadow: 0 0 10px rgba(100, 255, 218, 0.1);
+	}
+
+	button {
+		display: none;
+	}
+
+	#searchResults {
+		margin-top: 10px;
+		font-size: 14px;
+		color: #64ffda;
+		text-align: center;
+	}
+
+	/* 高亮样式 */
+	.highlight {
+		background-color: rgba(100, 255, 218, 0.1);
+		color: #64ffda;
+		font-weight: normal;
+	}
+
+	.content {
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 70px 20px 20px 20px;
+	}
+
+	.section-title {
+		color: #ccd6f6;
+		font-size: 38px;
+		font-weight: 600;
+		margin: 0 0 40px 0;
+		padding: 0;
+		text-align: center;
+		opacity: 0;
+		transform: translateY(20px);
+		animation: fadeInUp 0.5s ease forwards;
+	}
+
+	@media screen and (max-width: 768px) {
+		.section-title {
+			font-size: 24px;
+			margin: 0 0 30px 0;
+		}
+	}
+
+	.fl {
+		background: none;
+		border-radius: 10px;
+		padding: 25px;
+		margin: 30px 0;
+		border: 1px solid #233554;
+		transition: all 0.3s ease;
+		text-align: center;
+		position: relative;
+	}
+
+	.fl legend {
+		color: #64ffda;
+		font-size: 18px;
+		font-weight: 500;
+		padding: 0 10px;
+		width: auto;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.description-content {
+		text-align: left;
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 0 20px;
+	}
+
+	.description-content ol {
+		padding-left: 20px;
+		margin: 15px 0;
+		text-align: left;
+	}
+
+	.description-content ol li {
+		color: #8892b0;
+		margin: 12px 0;
+		line-height: 1.6;
+		font-size: 16px;
+		text-align: left;
+	}
+
+	/* 淡入动画 */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* 移除之前的冲突样式 */
+	.STYLE1, .STYLE2 {
+		color: #8892b0;
+	}
+
+	ol li {
+		color: #8892b0 !important;  /* 使用 !important 确保覆盖原有样 */
+	}
+
+	.logo {
+		max-width: 100%;
+		height: auto;
+		margin-top: 50px;
+	}
+
+	#urls {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 20px;
+		padding: 20px;
+		text-align: left;
+	}
+
+	#urls div {
+		margin: 0;
+		transition: all 0.3s ease;
+	}
+
+	#urls div a {
+		color: #fff;
+		display: block;
+		background-color: #07121e;
+		width: 150px;
+		height: 40px;
+		text-decoration: none;
+		font-size: 18px;
+		line-height: 40px;
+		text-align: center;
+	}
+
+	#urls div a.bg {
+		display: block;
+		padding: 12px 15px;
+		background-color: transparent;
+		color: #8892b0;
+		text-decoration: none;
+		font-size: 14px;
+		text-align: center;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		border: none;
+		position: relative;
+	}
+
+	#urls div a.bg:hover {
+		color: #64ffda;
+		transform: translateY(-2px);
+		background-color: transparent;
+	}
+
+	#urls div a.bg::after {
+		content: '';
+		position: absolute;
+		width: 0;
+		height: 2px;
+		bottom: -4px;
+		left: 0;
+		background-color: #64ffda;
+		transition: width 0.3s ease;
+	}
+
+	#urls div a.bg:hover::after {
+		width: 100%;
+	}
+
+	ol {
+		margin: 5px;
+	}
+
+	ol li {
+		color: #000;
+		margin: 8px 0;
+	}
+
+	body, td, th {
+		font-family: "Microsoft YaHei", "微软雅黑", Tahoma, "Lucida Grande", Arial, sans-serif;
+	}
+
+	@media (max-width: 600px) {
+		body {
+			font-size: 14px;
+		}
+		#urls div {
+			width: 90%;
+		}
+	}
+
+	#particles-js {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		background: linear-gradient(to bottom, #0a192f, #112240);
+	}
+
+	body {
+		margin: 0;
+		font-family: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+		color: #8892b0;
+		line-height: 1.3;
+		opacity: 0;
+		transition: opacity 0.5s ease;
+		background: transparent;
+	}
+
+	/* 音乐板块样式 */
+	.music-section {
+		background: none;
+		border-radius: 10px;
+		padding: 25px;
+		margin: 20px 0;
+		border: 1px solid #233554;
+		transition: all 0.3s ease;
+	}
+
+	.music-section legend {
+		color: #64ffda;
+		font-size: 18px;
+		font-weight: 500;
+		padding: 0 10px;
+	}
+
+	.music-container {
+		text-align: center;
+	}
+
+	/* 音频播放器样式 */
+	#musicPlayer {
+		width: 100%;
+		max-width: 400px;
+		height: 40px;
+		margin: 15px auto;
+		border-radius: 20px;
+		background: transparent;
+		border: 1px solid rgba(100, 255, 218, 0.2);
+		transition: all 0.3s ease;
+		position: relative;
+		z-index: 1;
+	}
+
+	#musicPlayer::before {
+		content: '';
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		right: -2px;
+		bottom: -2px;
+		background: linear-gradient(45deg, #64ffda, #0a192f, #64ffda);
+		border-radius: 8px;
+		z-index: -1;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	#musicPlayer:hover::before {
+		opacity: 0.3;
+		animation: borderRotate 2s linear infinite;
+	}
+
+	#musicPlayer::-webkit-media-controls-panel {
+		background: linear-gradient(45deg, rgba(10, 25, 47, 0.9), rgba(17, 34, 64, 0.9));
+		border-radius: 8px;
+	}
+
+	#musicPlayer::-webkit-media-controls-play-button {
+		filter: hue-rotate(180deg) brightness(150%);
+	}
+
+	#musicPlayer::-webkit-media-controls-timeline {
+		filter: hue-rotate(180deg) brightness(150%);
+	}
+
+	#musicPlayer::-webkit-media-controls-current-time-display,
+	#musicPlayer::-webkit-media-controls-time-remaining-display {
+		color: #64ffda;
+	}
+
+	#musicPlayer:hover {
+		border-color: #64ffda;
+		box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
+	}
+
+	/* 歌曲选择器样式 */
+	#songSelector {
+		background: rgba(17, 34, 64, 0.3);
+		border: 1px solid #233554;
+		color: #64ffda;
+		padding: 8px 15px;
+		border-radius: 8px;
+		font-size: 14px;
+		height: auto;
+		width: 200px;
+		margin: 10px auto;
+		display: block;
+		transition: all 0.3s ease;
+		cursor: pointer;
+		position: relative;
+		overflow: hidden;
+	}
+
+	#songSelector::after {
+		content: '';
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: linear-gradient(
+			45deg,
+			transparent,
+			rgba(100, 255, 218, 0.1),
+			transparent
+		);
+		transform: rotate(45deg);
+		animation: shine 3s infinite;
+		opacity: 0;
+	}
+
+	#songSelector:hover::after {
+		opacity: 1;
+	}
+
+	@keyframes borderRotate {
+		0% {
+			filter: hue-rotate(0deg);
+		}
+		100% {
+			filter: hue-rotate(360deg);
+		}
+	}
+
+	@keyframes shine {
+		0% {
+			transform: translateX(-100%) rotate(45deg);
+		}
+		100% {
+			transform: translateX(100%) rotate(45deg);
+		}
+	}
+
+	#songSelector option {
+		background-color: #0a192f;
+		color: #8892b0;
+		padding: 8px;
+	}
+
+	/* 添加返回主页按钮样式 */
+	.back-home {
+		position: fixed;
+		top: 20px;
+		left: 20px;
+		display: inline-block;
+		color: #ccd6f6;
+		text-decoration: none;
+		padding: 8px 16px;
+		border: 1px solid #233554;
+		border-radius: 4px;
+		transition: all 0.3s ease;
+		background-color: rgba(10, 25, 47, 0.7);
+		font-size: 14px;
+		z-index: 100;
+	}
+
+	.back-home:hover {
+		background-color: rgba(100, 255, 218, 0.1);
+		transform: translateY(-2px);
+		color: #64ffda;
+		border-color: #64ffda;
+	}
+
+	/* 基础指针样式 - 三角箭头 */
+	body {
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+				<path fill="%2364ffda" d="M2,2 L12,12 L8,12 L2,18 L2,2"/>\
+			</svg>') 2 2, auto;
+	}
+
+	/* 可点击元素的指针样式 - 手指 */
+	.nav-button, 
+	.avatar,
+	a,
+	button,
+	select,
+	#songSelector,
+	#musicPlayer,
+	.back-home,
+	.bg,
+	audio,
+	audio::-webkit-media-controls-panel,
+	audio::-webkit-media-controls-play-button,
+	audio::-webkit-media-controls-volume-slider,
+	audio::-webkit-media-controls-mute-button,
+	audio::-webkit-media-controls-timeline,
+	audio::-webkit-media-controls-current-time-display,
+	audio::-webkit-media-controls-time-remaining-display,
+	audio::-webkit-media-controls-timeline-container,
+	audio::-webkit-media-controls-volume-slider-container,
+	audio::-webkit-media-controls-volume-slider,
+	audio::-webkit-media-controls-seek-back-button,
+	audio::-webkit-media-controls-seek-forward-button,
+	audio::-webkit-media-controls-fullscreen-button,
+	audio::-webkit-media-controls-rewind-button,
+	audio::-webkit-media-controls-return-to-realtime-button,
+	audio::-webkit-media-controls-toggle-closed-captions-button {
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+				<path fill="%2364ffda" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+			</svg>') 1 1, pointer !important;
+	}
+
+	/* 悬停状态的发光效果 */
+	.nav-button:hover, 
+	.avatar:hover,
+	a:hover,
+	button:hover,
+	select:hover,
+	#songSelector:hover,
+	#musicPlayer:hover,
+	.back-home:hover,
+	.bg:hover,
+	audio:hover,
+	audio::-webkit-media-controls-panel:hover,
+	audio::-webkit-media-controls-play-button:hover,
+	audio::-webkit-media-controls-volume-slider:hover,
+	audio::-webkit-media-controls-mute-button:hover,
+	audio::-webkit-media-controls-timeline:hover {
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\
+				<path fill="%2364ffda" filter="drop-shadow(0 0 2px %2364ffda)" d="M1,12 L1,17 C1,18.1,1.9,19,3,19 L11,19 C12.1,19,13,18.1,13,17 L13,7 L11,7 L11,14 L9,14 L9,5 L7,5 L7,14 L5,14 L5,3 L3,3 L3,14 L1,14 Z"/>\
+			</svg>') 1 1, pointer !important;
+	}
+
+	/* 输入框选中文本的样式 */
+	#searchBar::selection {
+		background-color: rgba(100, 255, 218, 0.2);
+		color: #64ffda;
+	}
+
+	/* 所有输入框的I形光标 */
+	input, textarea {
+		cursor: url('data:image/svg+xml;utf8,\
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">\
+				<path fill="%2364ffda" d="M8,2 L12,2 L12,4 L13,4 L13,6 L12,6 L12,14 L13,14 L13,16 L12,16 L12,18 L8,18 L8,16 L7,16 L7,14 L8,14 L8,6 L7,6 L7,4 L8,4 Z"/>\
+			</svg>') 10 10, text !important;
+	}
+
+	@media screen and (max-width: 768px) {
+		/* 内容区域调整 */
+		.content {
+			padding: 70px 10px 20px 10px;
+			margin: 0;
+		}
+
+		/* 搜索框调整 */
+		#searchBar {
+			width: 90%;
+			font-size: 14px;
+			padding: 10px;
+		}
+
+		/* 工具网格布局调整 */
+		#urls {
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 10px;
+			padding: 10px;
+		}
+
+		#urls div {
+			width: 100%;
+		}
+
+		#urls div a.bg {
+			width: 100%;
+			font-size: 13px;
+			padding: 8px 10px;
+			height: auto;
+			line-height: 1.3;
+		}
+
+		/* 字段集合调整 */
+		.fl {
+			padding: 15px;
+			margin: 15px 0;
+		}
+
+		.fl legend {
+			font-size: 16px;
+		}
+
+		/* 音乐播放器调整 */
+		.music-section {
+			padding: 15px;
+		}
+
+		#musicPlayer {
+			max-width: 100%;
+		}
+
+		#songSelector {
+			width: 90%;
+			font-size: 13px;
+			padding: 6px 10px;
+		}
+
+		/* 返回按钮调整 */
+		.back-home {
+			top: 10px;
+			left: 10px;
+			padding: 6px 12px;
+			font-size: 12px;
+		}
+
+		/* 搜索结果文字调整 */
+		#searchResults {
+			font-size: 13px;
+			margin: 10px 0;
+		}
+	}
+
+	/* 超小屏幕额外调整 */
+	@media screen and (max-width: 320px) {
+		#urls {
+			grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+		}
+
+		#urls div a.bg {
+			font-size: 12px;
+			padding: 6px 8px;
+		}
+	}
+
+	#searchBar::placeholder {
+		color: #ccd6f6;
+		opacity: 0.7;
+	}
+
+	/* 为了确保在不同浏览器中都能正常显示，添加各种浏览器前缀 */
+	#searchBar::-webkit-input-placeholder {
+		color: #ccd6f6;
+		opacity: 0.7;
+	}
+
+	#searchBar::-moz-placeholder {
+		color: #ccd6f6;
+		opacity: 0.7;
+	}
+
+	#searchBar:-ms-input-placeholder {
+		color: #ccd6f6;
+		opacity: 0.7;
+	}
+
+	#searchBar:-moz-placeholder {
+		color: #ccd6f6;
+		opacity: 0.7;
+	}
+	</style>
+	<script>
+	function changeSong() {
+		var player = document.getElementById('musicPlayer');
+		var songSelector = document.getElementById('songSelector');
+		player.src = songSelector.value;
+		
+		player.style.opacity = '0';
+		setTimeout(() => {
+			player.src = songSelector.value;
+			player.play();
+			player.style.opacity = '1';
+		}, 300);
+	}
+	
+	function searchTools() {
+		var input = document.getElementById('searchBar').value.toLowerCase();
+		var urls = document.querySelectorAll('#urls div');
+		var found = false; // 添加一个标志变量来检查是否找到结果
+		urls.forEach(function(urlDiv) {
+			var linkText = urlDiv.innerText.toLowerCase();
+			if (linkText.includes(input)) {
+				urlDiv.style.display = 'block';
+				found = true; // 找到结果时设置为 true
+			} else {
+				urlDiv.style.display = 'none';
+			}
+		});
+		
+		// 根据是否找到结果更新搜索结果信息
+		var searchResults = document.getElementById('searchResults');
+		if (found) {
+			searchResults.innerHTML = ''; // 如果找到结果，清空之前的提示
+		} else {
+			searchResults.innerHTML = '未找到搜索结果'; // 如果没有找到结果，显示提示
+		}
+	}
+
+	// 增强的音乐播放器功能
+	function enhanceMusicPlayer() {
+		const player = document.getElementById('musicPlayer');
+		const selector = document.getElementById('songSelector');
+		
+		// 页面加载时自动选择第一首歌
+		if (selector.options.length > 0) {
+			player.src = selector.options[0].value;
+			// 不自动播放，等待用户手动点击播放
+			player.volume = 0.5; // 设置默认音量为50%
+		}
+		
+		// 添加音频可视化效果
+		let audioContext, analyser, dataArray;
+		
+		player.addEventListener('play', () => {
+			if (!audioContext) {
+				audioContext = new (window.AudioContext || window.webkitAudioContext)();
+				analyser = audioContext.createAnalyser();
+				const source = audioContext.createMediaElementSource(player);
+				source.connect(analyser);
+				analyser.connect(audioContext.destination);
+				analyser.fftSize = 256;
+				
+				const bufferLength = analyser.frequencyBinCount;
+				dataArray = new Uint8Array(bufferLength);
+				
+				// 创建音频可视化容器
+				const visualizer = document.createElement('div');
+				visualizer.id = 'audioVisualizer';
+				visualizer.style.cssText = `
+					position: absolute;
+					bottom: -15px;
+					left: 0;
+					width: 100%;
+					height: 2px;
+					display: flex;
+					justify-content: space-between;
+					z-index: 2;
+				`;
+				player.parentElement.appendChild(visualizer);
+				
+				// 创建可视化条
+				for (let i = 0; i < 20; i++) {
+					const bar = document.createElement('div');
+					bar.style.cssText = `
+						width: 3px;
+						height: 2px;
+						background: #64ffda;
+						transition: all 0.1s ease;
+					`;
+					visualizer.appendChild(bar);
+				}
+				
+				// 动画循环
+				function animate() {
+					if (player.paused) {
+						requestAnimationFrame(animate);
+						return;
+					}
+					
+					analyser.getByteFrequencyData(dataArray);
+					const bars = visualizer.children;
+					const step = Math.floor(dataArray.length / bars.length);
+					
+					for (let i = 0; i < bars.length; i++) {
+						const value = dataArray[i * step];
+						const height = value / 255 * 20;
+						bars[i].style.height = `${height}px`;
+						bars[i].style.opacity = 0.5 + (value / 255) * 0.5;
+					}
+					
+					requestAnimationFrame(animate);
+				}
+				
+				animate();
+			}
+		});
+		
+		// 添加切换动画
+		function changeSong() {
+			player.style.transform = 'scale(0.95)';
+			player.style.opacity = '0.5';
+			
+			setTimeout(() => {
+				player.src = selector.value;
+				player.play();
+				player.style.transform = 'scale(1)';
+				player.style.opacity = '1';
+			}, 300);
+		}
+		
+		selector.addEventListener('change', changeSong);
+	}
+
+	// 修改页面加载事件
+	document.addEventListener('DOMContentLoaded', function() {
+		document.body.style.opacity = '1';
+		
+		const elements = document.querySelectorAll('.fl');
+		elements.forEach((element, index) => {
+			setTimeout(() => {
+				element.style.opacity = '1';
+				element.style.transform = 'translateY(0)';
+			}, 100 * (index + 1));
+		});
+
+		// 初始化音乐播放器
+		enhanceMusicPlayer();
+	});
+
+	// 添加点击烟花特效
+	function createFirework(x, y) {
+		const particles = [];
+		const particleCount = 30;
+		const colors = ['#64ffda', '#9AECDB', '#26de81'];
+
+		for (let i = 0; i < particleCount; i++) {
+			const particle = document.createElement('div');
+			particle.style.position = 'fixed';
+			particle.style.left = x + 'px';
+			particle.style.top = y + 'px';
+			particle.style.width = '4px';
+			particle.style.height = '4px';
+			particle.style.borderRadius = '50%';
+			particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+			particle.style.pointerEvents = 'none';
+			particle.style.zIndex = '1000';
+			document.body.appendChild(particle);
+
+			const angle = (Math.PI * 2 * i) / particleCount;
+			const velocity = 3 + Math.random() * 3;
+			const vx = Math.cos(angle) * velocity;
+			const vy = Math.sin(angle) * velocity;
+
+			particles.push({
+				element: particle,
+				x: x,
+				y: y,
+				vx: vx,
+				vy: vy,
+				alpha: 1
+			});
+		}
+
+		let frame = 0;
+		const animate = () => {
+			frame++;
+			let isAlive = false;
+
+			particles.forEach(particle => {
+				if (particle.alpha <= 0) return;
+
+				particle.x += particle.vx;
+				particle.y += particle.vy;
+				particle.vy += 0.05;
+				particle.alpha -= 0.01;
+
+				particle.element.style.transform = `translate(${particle.x - x}px, ${particle.y - y}px)`;
+				particle.element.style.opacity = particle.alpha;
+
+				if (particle.alpha > 0) isAlive = true;
+			});
+
+			if (isAlive && frame < 200) {
+				requestAnimationFrame(animate);
+			} else {
+				particles.forEach(particle => {
+					if (particle.element.parentNode) {
+						particle.element.parentNode.removeChild(particle.element);
+					}
+				});
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+
+	// 添加点击事件监听器
+	document.addEventListener('click', (e) => {
+		// 忽略点击按钮、链接和其他可交互元素
+		if (e.target.tagName.toLowerCase() === 'a' || 
+			e.target.tagName.toLowerCase() === 'button' ||
+			e.target.tagName.toLowerCase() === 'select' ||
+			e.target.tagName.toLowerCase() === 'audio' ||
+			e.target.classList.contains('back-home') ||
+			e.target.classList.contains('bg') ||
+			e.target.id === 'searchBar' ||
+			e.target.id === 'songSelector' ||
+			e.target.id === 'musicPlayer') {
+			return;
+		}
+		createFirework(e.clientX, e.clientY);
+	});
+	</script>
+</head>
+
+<body>
+	<div id="particles-js"></div>
+	<!-- 添加返回主页按钮 -->
+	<a href="index.html" class="back-home">返回主页</a>
+	
+	<div class="content">
+		<div class="section-title">吴文卓自用工具集合</div>
+		<fieldset class="fl">
+			<legend>使用说明</legend>
+			<div class="description-content">
+				<ol>
+					<li>以下为吴文卓专用工具大全，所有工具仅供学习使用.</li>
+					<li>未经允许不得转载或商用，否则所产生的一切纠纷与责任均与本人无关.</li>
+					<li>本站由吴文龙提供网站支持.</li>
+					<li>如存在提取密码：123或1234</li>
+				</ol>
+			</div>
+		</fieldset>
+
+		<fieldset class="fl music-section">
+			<legend>无聊听听歌</legend>
+			<div class="music-container">
+				<audio id="musicPlayer" controls>
+					<source src="" type="audio/mpeg">
+					您的浏览器不支持音频播放器
+				</audio>
+				<select id="songSelector" onchange="changeSong()">
+					<option value="./sounds/xbdcs.mp3">新·百代成史</option>
+					<option value="./sounds/ydgqq6.mp3">石进 -夜的钢琴曲六</option>
+					<option value="./sounds/ahq.mp3">宋冬野 - 安和桥</option>
+					<option value="./sounds/xyxdgqj.mp3">夕阳下的宫崎骏（纯音治愈版） - 杜贴心</option>
+					<option value="./sounds/zdqc.mp3">纸短情长 (Live) - 胡彦斌</option>
+					<option value="./sounds/yhyl.mp3">烟花易冷 - 中国好声音</option>
+					<option value="./sounds/bwsezdg.mp3">林俊杰 - 不为谁而作的歌</option>
+					<option value="./sounds/rwlznsb.mp3">陈奕迅 - 让我留在你身边</option>
+					<option value="./sounds/KellyClarksonBecauseofYou.mp3">Kelly Clarkson - Because of You</option>
+				</select>
+			</div>
+		</fieldset>
+
+		<fieldset class="fl">
+			<legend class="STYLE2" style="font-size: 20px; text-align:center; font-weight: bold;">吴文卓自用工具大全</legend>
+			<div class="search-container">
+				<input type="text" id="searchBar" placeholder="输入关键词索引..." onkeyup="searchTools()"/>
+			</div>
+			<div id="searchResults"></div>
+
+			<div id="urls">
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ircR0292ds7c" target="_blank">油猴插件</a></div>
+				<div><a class="bg" href="tampermonkey.html" target="_blank">油猴插件脚本</a></div>
+				<div><a class="bg" href="https://greasyfork.org/zh-CN" target="_blank">Greasy Fork</a></div>
+				<div><a class="bg" href="TVbox.html" target="_blank">刷剧神器</a></div>
+				<div><a class="bg" href="https://libretv-12k.pages.dev/" target="_blank">自用看剧网站</a></div>
+				<div><a class="bg" href="DH.html" target="_blank">自用导航</a></div>
+				<div><a class="bg" href="office2019.html" target="_blank">office 2019 批量</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouu.com/i69or2if94ze?pwd=123" target="_blank">杜比安装器1.5</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouu.com/iXENz2vsryad?pwd=123" target="_blank">杜比安装器1.6</a></div>
+				<div><a class="bg" href="https://www.gamer520.com/" target="_blank">单机游戏</a></div>
+				<div><a class="bg" href="https://www.zol.com.cn/" target="_blank">中关村在线</a></div>
+				<div><a class="bg" href="https://www.appinn.com/" target="_blank">小众软件</a></div>
+				<div><a class="bg" href="https://www.ypojie.com/" target="_blank">易破解</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iCquK1kgqq7c" target="_blank">office 2019 激活</a></div>
+				<div><a class="bg" href="https://pan.baidu.com/s/1PfhzaDtGi9ZULghT2YT7Lg?pwd=1234&_at_=1715944695429#list/path=%2F" target="_blank">ABBYY破解版</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iJx2518eigsb" target="_blank">AI音频合成</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-ac6KA" target="_blank">视频剪辑Davinci</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iNGRY29ry36h" target="_blank">视频压缩工具</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i0jRx18einxi" target="_blank">卸载工具BC</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ifwZB18ejjzc" target="_blank">卸载工具便携</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-JpyKA" target="_blank">手机模拟器</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-Ic6KA" target="_blank">OCR截图文字识别</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ieR7818eioef" target="_blank">Google浏览器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iMTGj18eiwnc" target="_blank">科学上网clash</a></div>
+				<div><a class="bg" href="https://wwb.lanzouj.com/isCm5234euti" target="_blank">科学上网V2rayN</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iv4ow18elocb" target="_blank">科学上网白鲸</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/idS5x18elood" target="_blank">科学上网WireGuard</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iTyZy18eix6b" target="_blank">硬盘检测</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iSqHh18elgsj" target="_blank">小飞机硬件监测</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iR7JX18ej6ji" target="_blank">连接服务器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iOblZ18ej89a" target="_blank">单机游戏外挂</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i2NTx18ejjjg" target="_blank">FlowUs笔记</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ibUpH18ejjmj" target="_blank">文件移动</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ifqr42d98rxi?pwd=123" target="_blank">bt种子下载器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/imK3N18ejrej" target="_blank">Git</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/inLSy18ejszg" target="_blank">IDM下载器</a></div>
+				<div><a class="bg" href="https://wwb.lanzouj.com/i0LkK234fnfi" target="_blank">IDM激活</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iQpvO2d98gpe?pwd=123" target="_blank">IDM注册机</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ieZLd18ekmpg" target="_blank">视频播放器64位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iNXQe18ekq5a" target="_blank">视频播放器32位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iE9b418ekxyb" target="_blank">PowerToys</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ixWTZ18el8cf" target="_blank">种子下载器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iPnxM18el8jc" target="_blank">桌面整理</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ipQ5f18elaid" target="_blank">手机投屏32位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iCQbd18eldoh" target="_blank">手机投屏64位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iSpTB18elfsd" target="_blank">SD卡融卡工具</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i1whC18elg9a" target="_blank">取色器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i5xJo18elgkb" target="_blank">远操ToDesk</a></div>
+				
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ixVZt18elhqd" target="_blank">文件树</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ircYz18elhsf" target="_blank">VM清除工具</a></div>
+				
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ibt3118eloed" target="_blank">Windows一键激活</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iimjL18elomb" target="_blank">Ps Beta版</a></div>
+				
+				<div><a class="bg" href="https://wwlc.lanzouj.com/ivN7g18elouj" target="_blank">音乐下载器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iphfr18eloxc" target="_blank">网站整站下载器</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/invAw18et4jg" target="_blank">格式转化64位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i6uap18etbrg" target="_blank">格式转化32位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iLftD18etwwh" target="_blank">文件检索</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iAf9018euqvg" target="_blank">win10系统盘21H2</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i9p2618euu8h" target="_blank">win10系统盘22H2</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/i6ugm18euaba" target="_blank">Listen1-32位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iQk7418eunob" target="_blank">Listen1-64位</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iB5Rl18etvva" target="_blank">粉碎工具</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-4dBKA.html" target="_blank">OBS录屏工具</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-5hBKA.html" target="_blank">DirectX修复工具</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-6hBKA.html" target="_blank">win11系盘</a></div>
+				<div><a class="bg" href="https://pixabay.com/" target="_blank">免费素材</a></div>
+				<div><a class="bg" href="https://www.pexels.com/zh-cn/" target="_blank">免费素材（2）</a></div>
+				<div><a class="bg" href="https://www.iconfont.cn/" target="_blank">图标、插画下载</a></div>
+				<div><a class="bg" href="https://wall.alphacoders.com/" target="_blank">壁纸大全</a></div>
+				<div><a class="bg" href="https://zhaotaici.cn/" target="_blank">找台词</a></div>
+				<div><a class="bg" href="https://www.allhistory.com/" target="_blank">全历史</a></div>
+				<div><a class="bg" href="https://versus.com/cn" target="_blank">万物皆可对比</a></div>
+				<div><a class="bg" href="https://whathappenedinmybirthyear.com/" target="_blank">出生那年发生了啥</a></div>
+				<div><a class="bg" href="https://picwish.cn/photo-enhancer" target="_blank">图片高清修复</a></div>
+				<div><a class="bg" href="https://tensor.art/" target="_blank">在线AI作图</a></div>
+				<div><a class="bg" href="https://chat.openai.com/" target="_blank">ChatGPT</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-RsyKA" target="_blank">Chatbox</a></div>
+				<div><a class="bg" href="https://github.com/popjane/free_chatgpt_api?tab=readme-ov-file" target="_blank">OpenAI免费api</a></div>
+				<div><a class="bg" href="https://claude.ai/chats" target="_blank">Claude</a></div>
+				<div><a class="bg" href="https://bard.google.com/" target="_blank">Gemini</a></div>
+				<div><a class="bg" href="https://copilot.microsoft.com/" target="_blank">Copilot</a></div>
+				<div><a class="bg" href="https://firefly.adobe.com/" target="_blank">Ps（Beta）</a></div>
+				<div><a class="bg" href="https://trace.moe/" target="_blank">图片出处</a></div>
+				<div><a class="bg" href="https://bgsub.com/webapp/" target="_blank">透明图、证件照</a></div>
+				<div><a class="bg" href="https://jubt.fun/cn/index.html" target="_blank">BT磁力</a></div>
+				<div><a class="bg" href="http://weavesilk.com/" target="_blank">灵感创作</a></div>
+				<div><a class="bg" href="https://squoosh.app/" target="_blank">图片压缩</a></div>
+				<div><a class="bg" href="https://vocalremover.org/" target="_blank">人声分离</a></div>
+				<div><a class="bg" href="http://ip.flares.cloud/" target="_blank">ip优选</a></div>
+				<div><a class="bg" href="https://mubert.com/render" target="_blank">AI作曲</a></div>
+				<div><a class="bg" href="https://www.strerr.com/cn/exif.html" target="_blank">图片定位信息检测</a></div>
+				<div><a class="bg" href="https://www.flightradar24.com/16.66,113.14/5" target="_blank">飞机航班实时监控</a></div>
+				<div><a class="bg" href="https://palette.fm/" target="_blank">黑白图片上色</a></div>
+				<div><a class="bg" href="https://www.paperpass.com/" target="_blank">论文查重</a></div>
+				<div><a class="bg" href="https://ebookfoundation.github.io/free-programming-books-search/" target="_blank">编程书籍库</a></div>
+				<div><a class="bg" href="https://www.runoob.com/" target="_blank">菜鸟教程</a></div>
+				<div><a class="bg" href="https://www.gamer520.com/" target="_blank">单机游戏大全</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/izl2D1kgq7cd" target="_blank">PyCharm激活</a></div>
+				<div><a class="bg" href="https://www.123pan.com/s/dNr3jv-6mJKA.html" target="_blank">7z压缩工具</a></div>
+				<div><a class="bg" href="https://wwb.lanzouj.com/il9WD234hmhg" target="_blank">SD融卡工具</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-gTyKA" target="_blank">Flash纯净版</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-wTyKA" target="_blank">CCleaner注册机</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-MTyKA" target="_blank">桌面图标置记忆</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-ITyKA" target="_blank">视频压缩大小工具</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-JTyKA" target="_blank">系统U盘制作工具</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-BTyKA" target="_blank">视频字幕生成工具</a></div>
+				<div><a class="bg" href="https://www.123684.com/s/dNr3jv-FTyKA" target="_blank">火车票抢票工具</a></div>
+				<div><a class="bg" href="https://photofunia.com/" target="_blank">P图-场景换图</a></div>
+				<div><a class="bg" href="https://web.archive.org/" target="_blank">互联网档案馆</a></div>
+				<div><a class="bg" href="https://zoom.earth/" target="_blank">卫星地图</a></div>
+				<div><a class="bg" href="https://asoftmurmur.com/" target="_blank">白噪音生成</a></div>
+				<div><a class="bg" href="https://www.onlinedoctranslator.com/zh-CN/translationform" target="_blank">在线文档翻译</a></div>
+				<div><a class="bg" href="https://www.ilovepdf.com/zh-cn/unlock_pdf" target="_blank">解锁 PDF文件</a></div>
+				<div><a class="bg" href="https://ncm.worthsee.com/" target="_blank">NCM转换MP3</a></div>
+				<div><a class="bg" href="https://mylivewallpapers.com/" target="_blank">动态壁纸</a></div>
+				<div><a class="bg" href="https://www.cutout.pro/zh-CN/photo-enhancer-sharpener-upscaler" target="_blank">图像增强器</a></div>
+				<div><a class="bg" href="https://bigjpg.com/" target="_blank">图片无损放大</a></div>
+				<div><a class="bg" href="https://www.hama.app/" target="_blank">AI 图像擦除器</a></div>
+				<div><a class="bg" href="https://id.zhengzhaopai.com/zhengjian" target="_blank">证件照制作</a></div>
+				<div><a class="bg" href="https://magiconch.com/patina/" target="_blank">电子包浆-图片做旧</a></div>
+				<div><a class="bg" href="https://tools.liumingye.cn/music/#/" target="_blank">MyFreeMP3</a></div>
+				<div><a class="bg" href="www.ntdm.tv" target="_blank">NT动漫</a></div>
+				<div><a class="bg" href="https://www.gamer520.com/" target="_blank">游戏白嫖</a></div>
+				<div><a class="bg" href="https://yyrcd.com/n2s/" target="_blank">迁移到spotify</a></div>
+				<div><a class="bg" href="https://www.spotlistr.com/search/textbox" target="_blank">Spotify复制</a></div>
+				<div><a class="bg" href="https://www.v2ex.com/" target="_blank">V2EX</a></div>
+				<div><a class="bg" href="https://www.52pojie.cn/" target="_blank">吾爱破解</a></div>
+				<div><a class="bg" href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></div>
+				<div><a class="bg" href="https://tensor.art/" target="_blank">在线生图</a></div>
+				<div><a class="bg" href="https://suno.com/create" target="_blank">Suno AI作曲</a></div>
+				<div><a class="bg" href="https://www.lalal.ai/" target="_blank">提取人声</a></div>
+				<div><a class="bg" href="https://www.capcut.com/tools/ai-video-upscaler" target="_blank">视频提升到4k</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/itpk22d94r2d" target="_blank">内存清工具</a></div>
+				<div><a class="bg" href="https://wwlc.lanzouj.com/iMnWz2d9914j" target="_blank">本地音乐播放器</a></div>
+				<div><a class="bg" href="https://www.photopea.com/" target="_blank">ps在线平替版</a></div>
+				<div><a class="bg" href="https://www.ilovepdf.com/zh-cn" target="_blank">PDF在线工具</a></div>
+				<div><a class="bg" href="https://4275.com/" target="_blank">极速文件中转</a></div>
+				<div><a class="bg" href="https://www.skylinewebcams.com/" target="_blank">全球高清实况摄像头</a></div>
+				<div><a class="bg" href="https://temp-mail.org/zh/" target="_blank">临时邮箱</a></div>
+				<div><a class="bg" href="https://visuwords.com/" target="_blank">单词关联</a></div>
+				<div><a class="bg" href="https://bitly.com/" target="_blank">短网址</a></div>
+				<div><a class="bg" href="https://haoweichi.com/" target="_blank">美国地址生成器</a></div>
+				<div><a class="bg" href="https://www.fakepersongenerator.com/" target="_blank">虚拟个人资料生成</a></div>
+				<div><a class="bg" href="https://www.x720yun.com/" target="_blank">X720云全景</a></div>
+				<div><a class="bg" href="https://www.aconvert.com/" target="_blank">在线格式转换</a></div>
+				<div><a class="bg" href="https://libgen.is/" target="_blank">图书馆</a></div>
+				<div><a class="bg" href="https://clipdrop.co/relight" target="_blank">图片智能打光</a></div>
+				<div><a class="bg" href="https://unlimited.waifu2x.net/" target="_blank">图片无损放大|4X</a></div>
+				<div><a class="bg" href="https://inpaintweb.lxfater.com/" target="_blank">图片去水印|无损放大</a></div>
+				<div><a class="bg" href="https://zh.wikihow.com/%E9%A6%96%E9%A1%B5" target="_blank">专业的问题解答</a></div>
+			</div>
+		</fieldset>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+	<script>
+	// 粒子效果配置
+	particlesJS('particles-js',
+	{
+		"particles": {
+			"number": {
+				"value": 80,
+				"density": {
+					"enable": true,
+					"value_area": 800
+				}
+			},
+			"color": {
+				"value": "#64ffda"
+			},
+			"shape": {
+				"type": "circle"
+			},
+			"opacity": {
+				"value": 0.5,
+				"random": false,
+				"anim": {
+					"enable": false
+				}
+			},
+			"size": {
+				"value": 2,
+				"random": true,
+				"anim": {
+					"enable": false
+				}
+			},
+			"line_linked": {
+				"enable": true,
+				"distance": 150,
+				"color": "#64ffda",
+				"opacity": 0.2,
+				"width": 1
+			},
+			"move": {
+				"enable": true,
+				"speed": 2,
+				"direction": "none",
+				"random": false,
+				"straight": false,
+				"out_mode": "out",
+				"bounce": false
+			}
+		},
+		"interactivity": {
+			"detect_on": "canvas",
+			"events": {
+				"onhover": {
+					"enable": true,
+					"mode": "grab"
+				},
+				"onclick": {
+					"enable": true,
+					"mode": "push"
+				},
+				"resize": true
+			},
+			"modes": {
+				"grab": {
+					"distance": 140,
+					"line_linked": {
+						"opacity": 0.5
+					}
+				},
+				"push": {
+					"particles_nb": 4
+				}
+			}
+		},
+		"retina_detect": true
+	});
+
+	// 页面加载动画
+	document.addEventListener('DOMContentLoaded', function() {
+		document.body.style.opacity = '1';
+		
+		const elements = document.querySelectorAll('.fl');
+		elements.forEach((element, index) => {
+			setTimeout(() => {
+				element.style.opacity = '1';
+				element.style.transform = 'translateY(0)';
+			}, 100 * (index + 1));
+		});
+	});
+
+	// 优化的搜索功能
+	function searchTools() {
+		const input = document.getElementById('searchBar').value.toLowerCase();
+		const urls = document.querySelectorAll('#urls div');
+		let visibleCount = 0;
+		
+		urls.forEach(urlDiv => {
+			const linkText = urlDiv.innerText.toLowerCase();
+			if (input === '' || linkText.includes(input)) {
+				urlDiv.style.opacity = '1';
+				urlDiv.style.transform = 'translateY(0)';
+				urlDiv.style.display = 'block';
+				visibleCount++;
+			} else {
+				urlDiv.style.opacity = '0';
+				urlDiv.style.transform = 'translateY(20px)';
+				urlDiv.style.display = 'none';
+			}
+		});
+
+		const searchResults = document.getElementById('searchResults');
+		if (input === '') {
+			searchResults.innerHTML = '';
+		} else if (visibleCount === 0) {
+			searchResults.innerHTML = '未找到相关工具';
+		} else {
+			searchResults.innerHTML = `找到 ${visibleCount} 个相关工具`;
+		}
+	}
+
+	// 优化的音乐播放器
+	function changeSong() {
+		const player = document.getElementById('musicPlayer');
+		const songSelector = document.getElementById('songSelector');
+		
+		player.style.opacity = '0';
+		setTimeout(() => {
+			player.src = songSelector.value;
+			player.play();
+			player.style.opacity = '1';
+		}, 300);
+	}
+	</script>
+</body>
+</html>

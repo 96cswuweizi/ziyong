@@ -1,0 +1,594 @@
+{
+    "spider": "https://files.zohopublic.com.cn/public/workdrive-public/download/gd5ic01b6d4922692401eac6018178d033d06",
+    "生活":[
+        {
+            "name": "tvlive",
+            "类型":0,
+            "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/dxawi/0/main/tvlive.txt",
+            "玩家类型":2
+        },
+        {
+            "name":"电视",
+            "类型":0,
+            "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/wwb521/live/main/tv.m3u",
+            "玩家类型":1
+        }
+    ],
+    "站点":[
+        {
+            "key": "豆瓣",
+            "name": "豆瓣推荐",
+            "类型":3,
+            "api": "csp_DouDou",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":0
+        },
+        {
+            "key":"Auete",
+            "name":"Auete",
+            "类型":3,
+            "api":"csp_Auete",
+            "超时":15,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext":"https://auete.pro/"
+        },
+        {
+            "key": "贱贱",
+            "name": "荐片P2P",
+            "类型":3,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "玩家类型":"1",
+            "api": "https://gitlab.com/fantaiying/ext/-/raw/main/drpy2.min.js",
+            "ext": "https://gitlab.com/fantaiying/ext/-/raw/main/jp.js"
+        },
+        {
+            "key": "厂长",
+            "name": "厂长",
+            "类型":3,
+            "api":"csp_NewCz",
+            "超时":15,
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext":"https://www.czzy77.com/"
+        }
+        ,{
+            "key": "原创",
+            "name": "原创",
+            "类型":3,
+            "api":"csp_YCyz",
+            "超时":15,
+            "玩家类型":1,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "比特",
+            "name": "比特",
+            "类型":3,
+            "api":"csp_Bttwoo",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key":"alllive",
+            "name": "一直播",
+            "类型":3,
+            "api":"csp_Alllive",
+            "玩家类型":2,
+            "可搜索":0,
+            "快速搜索":0,
+            "可改变":0
+        }
+        ,{
+            "key": "腐剧",
+            "name": "腐剧",
+            "类型":3,
+            "api":"csp_AppYsV2",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext": "http://www.fuju2024.cc:8013/ruifenglb_api.php/v1.vod"
+        }
+        ,{
+            "key": "苹果",
+            "name": "苹果",
+            "类型":3,
+            "api":"csp_LiteApple",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "糯米",
+            "name": "糯米",
+            "类型":3,
+            "api":"csp_Nmyswv",
+            "超时":15,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "欢视",
+            "name": "欢视",
+            "类型":3,
+            "api":"csp_AppTT",
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext":"AO7TcBkd8IPB+BwH4Qma+opv"
+        }
+        ,{
+            "key": "玩偶",
+            "name": "玩偶哥哥(网盘)",
+            "类型":3,
+            "api":"csp_WoGG",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动",
+                "siteUrl": "https://www.wogg.net/",
+                "danMu": "弹"
+            }
+        }
+        ,{
+            "key": "米搜",
+            "name": "小米(网盘搜索)",
+            "类型":3,
+            "api":"csp_MIPanSo",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key": "抠搜",
+            "name": "抠抠(网盘搜索)",
+            "类型":3,
+            "api":"csp_KkSs",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key":"Lib",
+            "name": "立播",
+            "类型":3,
+            "api":"csp_Libvio",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key": "小点",
+            "name": "小点",
+            "类型":3,
+            "api":"csp_Appxd",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "ext":"FbjEd1ddiJ6bwA0Z8ijG89k6OstPBosSHy5L8uXWgRZGSNrCqC7DmxucvvflR3fsMy/Wnih3xSpmA3pwCNspfAcIH4fYhmOEdGxX3jEdjqUpC+m0fSxkNAbkIy0diJWirn+WOtBkBcYhsgA8u1igBBUadbO0s0MCPsYcbHFRNw=="
+        }
+        ,{
+            "key": "煤球",
+            "name": "煤球",
+            "类型":3,
+            "api":"csp_Appmq",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "短剧",
+            "name": "短剧",
+            "类型":3,
+            "api":"csp_Djtt",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "文采",
+            "name": "文采",
+            "类型":3,
+            "api":"csp_Jpys",
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key":"zxzj",
+            "name": "在线",
+            "类型":3,
+            "api":"csp_Zxzj",
+            "超时":15,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext": "https://www.zxzjhd.com/"
+        }
+        ,{
+            "key": "低端",
+            "name": "低端",
+            "类型":3,
+            "api":"csp_Ddrk",
+            "玩家类型":"2",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "可可",
+            "name": "可可",
+            "类型":3,
+            "api":"csp_Kekys",
+            "超时":15,
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "热播",
+            "name": "热播",
+            "类型":3,
+            "api":"csp_AppTT",
+            "超时":15,
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1,
+            "ext": "AO7TcBkd8I/B5wQc4Qma+pU="
+        }
+        ,{
+            "key": "萌米",
+            "name": "萌米",
+            "类型":3,
+            "api":"csp_AppTT",
+            "超时":15,
+            "玩家类型":1,
+            "ext":"AO7TcBkd8Iifux0Y8Qze6tVlMg=="
+        }
+        ,{
+            "key": "南瓜",
+            "name": "南瓜",
+            "类型":3,
+            "api": "csp_NanGua",
+            "超时":15,
+            "玩家类型":2,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "快看",
+            "name": "快看",
+            "类型":3,
+            "api":"csp_Kkys",
+            "超时":15,
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "新6V",
+            "name": "新6V磁力",
+            "类型":3,
+            "api":"csp_SixV",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "ext":"https://www.xb6v.com/"
+        }
+        ,{
+            "key":"Dm84",
+            "name": "动漫巴士",
+            "类型":3,
+            "api":"csp_Dm84",
+            "可搜索":1,
+            "快速搜索":1,
+            "可变":1
+        }
+        ,{
+            "key": "暴风",
+            "name": "暴风",
+            "类型":1,
+            "api":"https://bfzyapi.com/api.php/provide/vod"
+        }
+        ,{
+            "key":"IK",
+            "name":"IK",
+            "类型":1,
+            "api": "https://ikunzyapi.com/api.php/provide/vod/from/ikm3u8/",
+            "类别": [
+                "动作片",
+                "喜剧片",
+                "爱情片",
+                "科幻片",
+                "恐怖片",
+                "剧情片",
+                "战争片",
+                "灾难片",
+                "犯罪片",
+                "悬疑片",
+                "惊悚片",
+                "奇幻片",
+                "冒险片",
+                "武侠片",
+                "其它片",
+                "国产剧",
+                "港台剧",
+                "日韩剧",
+                "欧美剧",
+                "香港剧",
+                "台灣剧",
+                "美国剧",
+                "韩国剧",
+                "日本剧",
+                "泰国剧",
+                "港澳剧",
+                "日剧",
+                "韩剧",
+                "泰剧",
+                "海外剧",
+                "马泰剧",
+                "中漫",
+                "日漫",
+                "动漫",
+                "纪录片",
+                "动漫",
+                "动漫片",
+                "国产动漫",
+                "港台动漫",
+                "日本动漫",
+                "海外动漫",
+                "日韩动漫",
+                "欧美动漫",
+                "动漫电影",
+                "国内综艺",
+                "港台综艺",
+                "大陆综艺",
+                "日韩综艺",
+                "欧美综艺",
+                "海外综艺",
+                "电影解说"
+            ],
+            "可搜索":1,
+            "快速搜索":1
+        }
+        ,{
+            "key": "海外看",
+            "name": "海外看(墙外)",
+            "类型":1,
+            "api": "https://haiwaikan.com/api.php/provide/vod",
+            "可搜索":1,
+            "可变":1,
+            "类别": [
+                "日本动漫",
+                "国产动漫",
+                "欧美动漫",
+                "国产剧",
+                "韩剧",
+                "日剧",
+                "台剧",
+                "泰剧",
+                "港剧",
+                "欧美剧",
+                "动画电影",
+                "韩国综艺",
+                "国产综艺",
+                "日本综艺",
+                "欧美综艺",
+                "冒险片",
+                "剧情片",
+                "动作片",
+                "同一性片",
+                "喜剧片",
+                "奇幻片",
+                "恐怖片",
+                "悬疑片",
+                "惊悚片",
+                "战争片",
+                "歌舞片",
+                "灾难片",
+                "爱情片",
+                "犯罪片",
+                "科幻片",
+                "纪录片",
+                "经典片"
+            ]
+        }
+        ,{
+            "key":"csp_Nbys",
+            "name": "泥视频(墙外)",
+            "类型":3,
+            "api":"csp_NiNi",
+            "可搜索":1,
+            "快速搜索":1,
+            "可过滤":1
+        }
+        ,{
+            "key": "夸搜",
+            "name": "夸搜(网盘搜索)",
+            "类型":3,
+            "api":"csp_PanSearch",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "pan":"夸克",
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key":"YiSo",
+            "name": "易搜(网盘搜索)",
+            "类型":3,
+            "api":"csp_YiSo",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key": "盘搜",
+            "name": "盘搜(网盘搜索)",
+            "类型":3,
+            "api": "csp_PanSou",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key":"PanSearch",
+            "name": "盘Se(网盘搜索)",
+            "类型":3,
+            "api":"csp_PanSearch",
+            "可搜索":1,
+            "快速搜索":1,
+            "可改变":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key":"push_agent",
+            "name": "手机┃推送",
+            "类型":3,
+            "api":"csp_Push",
+            "可搜索":0,
+            "快速搜索":0,
+            "分机":{
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "来自":"4k|自动"
+            }
+        }
+        ,{
+            "key":"cntv",
+            "name": "央视[cat]",
+            "类型":3,
+            "api":"./cat/cntv_open.js"
+        }
+        ,{
+            "key":"bookan_book_open",
+            "name": "Bookan[cat]",
+            "类型":3,
+            "api":"./cat/MyCatBookan.js"
+        }
+        ,{
+            "key":"boosj_open",
+            "name": "童趣[cat]",
+            "类型":3,
+            "api":"./cat/boosj_open.js"
+        }
+        ,{
+            "key": "tuxiaobei_open",
+            "name": "兔小贝[cat]",
+            "类型":3,
+            "api":"./cat/tuxiaobei_open.js"
+        }
+        ,{
+            "key":"ubestkid_open",
+            "name": "贝乐虎[cat]",
+            "类型":3,
+            "api":"./cat/ubestkid_open.js"
+        }
+        ,{
+            "key": "比利",
+            "name":"Bili",
+            "类型":3,
+            "api":"csp_Bili",
+            "风格": {
+                "类型":"矩形",
+                "比率":1.597
+            },
+            "可搜索":1,
+            "快速搜索":0,
+            "可改变":0,
+            "ext": "https://xhdwc.tk/json/bilibili.json"
+        }
+        ,{
+            "key": "课堂教育",
+            "name": "课堂教育",
+            "类型":3,
+            "api":"csp_Bili",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":1,
+            "ext": "https://xhdwc.tk/json/xx1.json"
+        }
+        ,{
+            "key": "青少年教育",
+            "name": "青少年教育",
+            "类型":3,
+            "api":"csp_Bili",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":1,
+            "ext": "https://xhdwc.tk/json/xx2.json"
+        }
+        ,{
+            "key": "小学教育",
+            "name": "小学教育",
+            "类型":3,
+            "api":"csp_Bili",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":1,
+            "ext": "https://xhdwc.tk/json/xx3.json"
+        }
+        ,{
+            "key": "初中教育",
+            "name": "初中教育",
+            "类型":3,
+            "api":"csp_Bili",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":1,
+            "ext": "https://xhdwc.tk/json/xx4.json"
+        }
+        ,{
+            "key": "高中教育",
+            "name": "高中教育",
+            "类型":3,
+            "api":"csp_Bili",
+            "可搜索":0,
+            "快速搜索":0,
+            "可过滤":1,
+            "ext": "https://xhdwc.tk/json/xx5.json"
+        }
+    ]
+}
