@@ -60,7 +60,7 @@ h1.title {
 .form-row { margin-bottom: 14px; }
 .form-row label { display: block; color: #64ffda; font-size: 13px; margin-bottom: 6px; }
 
-input[type=text], input[type=password], input[type=date], textarea, select {
+input[type=text], input[type=password], input[type=date], input[type=url], textarea, select {
     width: 100%;
     background: rgba(10, 25, 47, 0.8);
     border: 1px solid #233554;
@@ -90,10 +90,49 @@ textarea#mdContent { min-height: 320px; font-family: Consolas, Monaco, monospace
     margin-top: 4px;
 }
 .btn:hover { background: rgba(100, 255, 218, 0.18); transform: translateY(-1px); }
-.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 .btn.danger { border-color: #ff6b6b; color: #ff6b6b; background: rgba(255, 107, 107, 0.06); }
 .btn.danger:hover { background: rgba(255, 107, 107, 0.15); }
-.btn.small { padding: 5px 12px; font-size: 12px; }
+.btn.small { padding: 4px 9px; font-size: 12px; margin-right: 4px; }
+.btn.ghost { border-color: #233554; color: #8892b0; background: rgba(10,25,47,0.4); }
+.btn.ghost:hover { border-color: #64ffda; color: #64ffda; }
+
+/* 有未保存改动时按钮高亮闪烁 */
+@keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(100,255,218,.55); }
+    50%     { box-shadow: 0 0 0 8px rgba(100,255,218,0); }
+}
+.btn.dirty { animation: pulse 1.6s infinite; border-color: #ffd166; color: #ffd166; background: rgba(255,209,102,.08); }
+
+.dirty-tip {
+    display: none;
+    background: rgba(255, 209, 102, 0.08);
+    border: 1px solid rgba(255, 209, 102, 0.4);
+    color: #ffd166;
+    border-radius: 6px;
+    padding: 9px 13px;
+    font-size: 13px;
+    margin: 10px 0;
+}
+.dirty-tip.show { display: block; }
+
+/* 顶部工具栏吸顶，添加/保存按钮随滚动常驻 */
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(17, 34, 64, 0.96);
+    backdrop-filter: blur(6px);
+    padding: 10px 0 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #233554;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.toolbar .grow { flex: 1; }
+.toolbar input[type=text] { width: 190px; padding: 7px 10px; font-size: 13px; }
 
 .hint { font-size: 12.5px; color: #5d6b8a; line-height: 1.7; margin-top: 8px; }
 .hint a { color: #64ffda; }
@@ -105,7 +144,7 @@ textarea#mdContent { min-height: 320px; font-family: Consolas, Monaco, monospace
     border-radius: 8px;
     padding: 12px 15px;
     font-size: 13px;
-    max-height: 220px;
+    max-height: 260px;
     overflow-y: auto;
     display: none;
     line-height: 1.8;
@@ -114,11 +153,52 @@ textarea#mdContent { min-height: 320px; font-family: Consolas, Monaco, monospace
 .log-err { color: #ff8787; }
 .log-info { color: #8892b0; }
 
-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-th, td { border: 1px solid #233554; padding: 7px 9px; font-size: 13px; text-align: left; }
+/* 右上角吐司提示，即时反馈每一步操作 */
+#toasts {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    pointer-events: none;
+}
+.toast {
+    max-width: 380px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #e6f1ff;
+    background: #112240;
+    border: 1px solid #233554;
+    border-left: 4px solid #64ffda;
+    box-shadow: 0 8px 24px rgba(2, 12, 27, 0.5);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform .35s cubic-bezier(.2,.9,.3,1.2), opacity .35s;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast.ok   { border-left-color: #64ffda; }
+.toast.err  { border-left-color: #ff6b6b; }
+.toast.warn { border-left-color: #ffd166; }
+.toast.info { border-left-color: #8892b0; }
+
+table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+th, td { border: 1px solid #233554; padding: 7px 9px; font-size: 13px; text-align: left; vertical-align: middle; }
 th { color: #64ffda; background: rgba(100, 255, 218, 0.04); }
 td input { padding: 6px 8px; font-size: 13px; }
-td .url-in { width: 100%; min-width: 220px; }
+td .url-in { width: 100%; min-width: 200px; }
+td.idx { color: #5d6b8a; text-align: center; width: 40px; }
+td.ops { white-space: nowrap; width: 130px; }
+td.handle { cursor: grab; color: #5d6b8a; text-align: center; width: 34px; user-select: none; font-size: 15px; }
+td.handle:hover { color: #64ffda; }
+tr.dragging { opacity: .45; background: rgba(100,255,218,.06); }
+tr.row-new input.t-name { border-color: #64ffda; }
+
+.table-scroll { max-height: 62vh; overflow-y: auto; border-radius: 6px; }
 
 .post-item {
     display: flex;
@@ -131,14 +211,16 @@ td .url-in { width: 100%; min-width: 220px; }
     background: rgba(10, 25, 47, 0.5);
     flex-wrap: wrap;
 }
-.post-item .p-title { color: #ccd6f6; font-size: 14.5px; flex: 1; min-width: 180px; }
+.post-item .p-order { color: #5d6b8a; font-size: 12px; width: 26px; }
+.post-item .p-title { color: #ccd6f6; font-size: 14.5px; flex: 1; min-width: 160px; }
 .post-item .p-date { font-size: 12.5px; color: #5d6b8a; }
 .post-item .p-file { font-size: 11.5px; color: #5d6b8a; }
+.post-item .ops { white-space: nowrap; }
 
 .divider { border: none; border-top: 1px dashed #233554; margin: 22px 0; }
 
 .help-ol { padding-left: 22px; line-height: 2; font-size: 14px; }
-.help-ol code { background: #0d1f38; border: 1px solid #233554; border-radius: 4px; padding: 1px 7px; color: #64ffda; font-size: 13px; }
+.help-ol code, .help-box code { background: #0d1f38; border: 1px solid #233554; border-radius: 4px; padding: 1px 7px; color: #64ffda; font-size: 13px; }
 .help-box { background: rgba(100, 255, 218, 0.05); border-left: 3px solid #64ffda; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 13.5px; line-height: 1.9; margin: 14px 0; }
 
 .upload-result { font-size: 13px; padding: 8px 12px; border: 1px dashed #233554; border-radius: 6px; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -148,11 +230,14 @@ td .url-in { width: 100%; min-width: 220px; }
     .panel { padding: 16px; }
     h1.title { font-size: 1.4em; }
     .tab-btn { padding: 8px 13px; font-size: 13px; }
+    #toasts { left: 12px; right: 12px; }
+    .toast { max-width: none; }
 }
 </style>
 </head>
 
 <body>
+<div id="toasts"></div>
 <div class="wrap">
     <h1 class="title">网站管理后台</h1>
     <p class="sub">GitHub + Cloudflare Pages · 免服务器 · 改完自动部署上线</p>
@@ -181,20 +266,30 @@ td .url-in { width: 100%; min-width: 220px; }
             <input type="text" id="cfgBranch" placeholder="例如 wangzhan">
         </div>
         <div class="form-row">
+            <label>站点网址（用于自动检测是否已经上线）</label>
+            <input type="text" id="cfgSite" placeholder="例如 https://wuwenzhuo.dpdns.org">
+        </div>
+        <div class="form-row">
             <label>GitHub Token（Fine-grained，只需 Contents 读写权限）</label>
             <input type="password" id="cfgToken" placeholder="github_pat_ 开头，只保存在你本机浏览器里">
         </div>
         <button class="btn" id="btnSaveCfg">保存配置</button>
         <button class="btn" id="btnTestConn">测试连接</button>
+        <button class="btn ghost" id="btnCheckLive">检测线上版本</button>
         <button class="btn danger" id="btnClearCfg">清除本机 Token</button>
-        <p class="hint">Token 仅保存在你当前浏览器的 localStorage 中，不会上传到任何服务器（本页面是纯静态页面，没有后端）。详细创建步骤见「使用帮助」。</p>
+        <p class="hint">Token 仅保存在你当前浏览器的 localStorage 中，不会上传到任何服务器（本页面是纯静态页面，没有后端）。填了站点网址后，每次保存会自动轮询站点判断是否已部署完成。详细创建步骤见「使用帮助」。</p>
     </div>
 
     <!-- ============ 博客管理 ============ -->
     <div class="panel" id="tabBlog">
-        <h2>博客文章管理</h2>
-        <button class="btn" id="btnLoadPosts">刷新文章列表</button>
-        <div id="postList" style="margin-top: 14px;"><p class="hint">点击「刷新文章列表」从 GitHub 加载。</p></div>
+        <div class="toolbar">
+            <button class="btn small" id="btnLoadPosts">刷新文章列表</button>
+            <button class="btn small" id="btnSaveBlog">保存顺序并发布</button>
+            <span class="grow"></span>
+            <span class="hint" style="margin:0;" id="blogCount"></span>
+        </div>
+        <div id="blogDirtyTip" class="dirty-tip">顺序已改动但还未保存 —— 点左上角「保存顺序并发布」才会真正生效。</div>
+        <div id="postList"><p class="hint">点击「刷新文章列表」从 GitHub 加载。</p></div>
 
         <hr class="divider">
 
@@ -235,16 +330,31 @@ td .url-in { width: 100%; min-width: 220px; }
 
     <!-- ============ 工具管理 ============ -->
     <div class="panel" id="tabTools">
-        <h2>工具页链接管理</h2>
-        <button class="btn" id="btnLoadTools">加载工具列表</button>
-        <button class="btn" id="btnAddToolRow">添加一行</button>
-        <button class="btn" id="btnSaveTools">保存并发布</button>
-        <p class="hint">加载后可直接修改名称/链接，点行尾删除；「保存并发布」才会真正提交到 GitHub。</p>
-        <div style="overflow-x:auto;">
+        <div class="toolbar">
+            <button class="btn small" id="btnLoadTools">加载工具列表</button>
+            <button class="btn small" id="btnAddToolRow">添加一行</button>
+            <button class="btn small" id="btnSaveTools">保存并发布</button>
+            <span class="grow"></span>
+            <input type="text" id="toolFilter" placeholder="筛选工具（输入名称快速定位）">
+            <span class="hint" style="margin:0;" id="toolCount"></span>
+        </div>
+        <div id="toolsDirtyTip" class="dirty-tip">内容或顺序已改动但还未保存 —— 点「保存并发布」才会真正提交到 GitHub。</div>
+        <div class="hint" style="margin-top:0;">每行右侧 ↑ ↓ 可调整顺序，也可以按住行首的 ⠿ 直接拖动；新加的行会自动滚动到视野中央并聚焦，不用再手动拉到顶部。</div>
+        <div class="table-scroll">
         <table id="toolsTable" style="display:none;">
-            <thead><tr><th style="width:44px;">#</th><th style="width:220px;">名称</th><th>链接</th><th style="width:60px;">删除</th></tr></thead>
+            <thead><tr>
+                <th style="width:34px;"></th>
+                <th style="width:40px;">#</th>
+                <th style="width:200px;">名称</th>
+                <th>链接</th>
+                <th style="width:140px;">操作</th>
+            </tr></thead>
             <tbody id="toolsBody"></tbody>
         </table>
+        </div>
+        <div style="margin-top:14px;">
+            <button class="btn small" id="btnAddToolRow2">添加一行</button>
+            <button class="btn small" id="btnSaveTools2">保存并发布</button>
         </div>
     </div>
 
@@ -277,7 +387,7 @@ td .url-in { width: 100%; min-width: 220px; }
         </ol>
         <div class="help-box">
             <b style="color:#ccd6f6;">日常使用流程：</b><br>
-            ① 打开 <code>你的域名/admin.html</code> → ② 写文章 / 加工具 / 传图片 → ③ 点保存发布 → ④ 等约 1 分钟，Cloudflare 自动更新网站。<br>
+            ① 打开 <code>你的域名/admin</code> → ② 写文章 / 加工具 / 传图片 → ③ 点保存发布 → ④ 右上角会弹提示，状态栏会显示"已提交 → 部署中 → 线上已生效"。<br>
             手机浏览器也能用，配置需在每台设备上分别填一次。
         </div>
         <div class="help-box">
@@ -308,7 +418,20 @@ function getCfg(){
     try { return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch(e){ return {}; }
 }
 
-function log(msg, type){
+/* 右上角吐司提示：每次操作必有反馈 */
+function toast(msg, type, ms){
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type || 'info');
+    el.textContent = msg;
+    $('toasts').appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+    setTimeout(function(){
+        el.classList.remove('show');
+        setTimeout(function(){ if (el.parentNode) el.remove(); }, 400);
+    }, ms || 4200);
+}
+
+function log(msg, type, returnEl){
     var box = $('statusBox');
     box.style.display = 'block';
     var line = document.createElement('div');
@@ -317,6 +440,19 @@ function log(msg, type){
     line.textContent = '[' + t + '] ' + msg;
     box.appendChild(line);
     box.scrollTop = box.scrollHeight;
+    return returnEl ? line : line;
+}
+
+/* 按钮忙碌态：返回恢复函数 */
+function busy(btn, text){
+    if (!btn) return function(){};
+    if (!btn.dataset.oldText) btn.dataset.oldText = btn.textContent;
+    btn.textContent = text;
+    btn.disabled = true;
+    return function(){
+        btn.textContent = btn.dataset.oldText;
+        btn.disabled = false;
+    };
 }
 
 function utf8ToB64(str){
@@ -358,7 +494,10 @@ function repoPath(p){
 
 function ghFetch(path, opts){
     var cfg = getCfg();
-    if (!cfg.token) return Promise.reject(new Error('请先在「连接配置」里填写并保存 GitHub Token'));
+    if (!cfg.token) {
+        toast('请先在「连接配置」里填写并保存 GitHub Token', 'err', 6000);
+        return Promise.reject(new Error('未配置 Token'));
+    }
     opts = opts || {};
     return fetch('https://api.github.com' + path, {
         method: opts.method || 'GET',
@@ -378,14 +517,12 @@ function ghFetch(path, opts){
     });
 }
 
-// 读取文本文件（返回 {sha, text}）；文件不存在时抛 404
 function ghGetText(path){
     return ghFetch(repoPath(path)).then(function(res){ return res.json(); }).then(function(j){
         return { sha: j.sha, text: j.content ? b64ToUtf8(j.content) : '' };
     });
 }
 
-// 写入文本文件（自动带上已存在文件的 sha）
 function ghPutText(path, text, message){
     var payload = { message: message, branch: getCfg().branch || 'main', content: utf8ToB64(text) };
     return ghGetText(path).then(function(cur){
@@ -401,7 +538,6 @@ function ghPutBinary(path, b64, message){
     var payload = { message: message, branch: getCfg().branch || 'main', content: b64 };
     return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) }).catch(function(e){
         if (e.status !== 409) throw e;
-        // 已存在则带上 sha 覆盖
         return ghGetText(path).then(function(cur){
             payload.sha = cur.sha;
             return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) });
@@ -416,6 +552,42 @@ function ghDelete(path, message){
             body: JSON.stringify({ message: message, sha: cur.sha, branch: getCfg().branch || 'main' })
         });
     });
+}
+
+/* ================== 线上是否生效检测 ================== */
+/* 保存后自动轮询站点上的同名文件，判断是否已是刚提交的内容 */
+function watchLive(path, expectText, label){
+    var base = (getCfg().site || '').replace(/\/+$/, '');
+    if (!base) {
+        log('提示：在「连接配置」里填上站点网址，就能自动检测是否已上线', 'info');
+        return;
+    }
+    var tries = 0, max = 8;
+    var line = log('⏳ 已提交 GitHub，正在等待 Cloudflare 部署 ' + label + ' ...', 'info');
+    var norm = function(s){ return String(s).replace(/\s+$/, ''); };
+    (function poll(){
+        tries++;
+        fetch(base + '/' + path + '?_=' + Date.now(), { cache: 'no-store' })
+            .then(function(r){ return r.ok ? r.text() : ''; })
+            .then(function(t){
+                if (t && norm(t) === norm(expectText)) {
+                    line.className = 'log-ok';
+                    line.textContent = '✓ 线上已生效：' + label + '（第 ' + tries + ' 次检测到，约 ' + (tries * 15) + ' 秒）';
+                    toast('线上已更新 ✓ ' + label, 'ok', 6000);
+                } else if (tries < max) {
+                    line.textContent = '… Cloudflare 部署中（第 ' + tries + '/' + max + ' 次检查，15 秒后重试）';
+                    setTimeout(poll, 15000);
+                } else {
+                    line.className = 'log-err';
+                    line.textContent = '⚠ ' + label + ' 已提交到 GitHub，但 ' + (max * 15) + ' 秒内站点还不是最新。请到 Cloudflare Pages 控制台看部署是否失败，或手动打开 ' + base + '/' + path + ' 核对。';
+                    toast('已提交但线上暂未更新，请看状态栏说明', 'warn', 7000);
+                }
+            })
+            .catch(function(){
+                line.className = 'log-err';
+                line.textContent = '⚠ 无法自动读取线上文件（跨域限制或网址未配置）：' + base + '/' + path + '。请手动刷新网页核对。';
+            });
+    })();
 }
 
 /* ================== Tab 切换 ================== */
@@ -434,38 +606,67 @@ function fillCfgForm(){
     $('cfgOwner').value = cfg.owner || '96cswuweizi';
     $('cfgRepo').value = cfg.repo || 'ziyong';
     $('cfgBranch').value = cfg.branch || 'wangzhan';
+    $('cfgSite').value = cfg.site || 'https://wuwenzhuo.dpdns.org';
     $('cfgToken').value = cfg.token || '';
 }
 fillCfgForm();
 
-$('btnSaveCfg').addEventListener('click', function(){
-    var cfg = {
+function readCfgForm(){
+    return {
         owner: $('cfgOwner').value.trim(),
         repo: $('cfgRepo').value.trim(),
         branch: $('cfgBranch').value.trim() || 'main',
+        site: $('cfgSite').value.trim().replace(/\/+$/, ''),
         token: $('cfgToken').value.trim()
     };
-    if (!cfg.owner || !cfg.repo || !cfg.token) { log('请把用户名、仓库、Token 都填上', 'err'); return; }
+}
+
+$('btnSaveCfg').addEventListener('click', function(){
+    var cfg = readCfgForm();
+    if (!cfg.owner || !cfg.repo || !cfg.token) { toast('请把用户名、仓库、Token 都填上', 'err', 5000); return; }
     localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
     log('配置已保存到本机浏览器', 'ok');
+    toast('配置已保存 ✓', 'ok');
 });
 
 $('btnTestConn').addEventListener('click', function(){
-    var cfg = {
-        owner: $('cfgOwner').value.trim(),
-        repo: $('cfgRepo').value.trim(),
-        branch: $('cfgBranch').value.trim() || 'main',
-        token: $('cfgToken').value.trim()
-    };
-    if (!cfg.token) { log('请先填写 Token', 'err'); return; }
+    var cfg = readCfgForm();
+    if (!cfg.token) { toast('请先填写 Token', 'err', 4000); return; }
     localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    var done = busy($('btnTestConn'), '测试中...');
     log('正在测试连接 ' + cfg.owner + '/' + cfg.repo + ' ...', 'info');
     ghFetch('/repos/' + cfg.owner + '/' + cfg.repo)
         .then(function(res){ return res.json(); })
         .then(function(j){
-            log('连接成功！仓库: ' + j.full_name + '，默认分支: ' + j.default_branch + (j.default_branch !== cfg.branch ? '（注意：你配置的分支是 ' + cfg.branch + '）' : ''), 'ok');
+            log('连接成功！仓库: ' + j.full_name + '，默认分支: ' + j.default_branch, 'ok');
+            toast('连接成功 ✓ ' + j.full_name, 'ok', 5000);
+            done();
         })
-        .catch(function(e){ log('连接失败: ' + e.message, 'err'); });
+        .catch(function(e){ log('连接失败: ' + e.message, 'err'); toast('连接失败：' + e.message, 'err', 7000); done(); });
+});
+
+$('btnCheckLive').addEventListener('click', function(){
+    var cfg = readCfgForm();
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    var done = busy($('btnCheckLive'), '检测中...');
+    var base = cfg.site;
+    if (!base) { toast('请先填写站点网址', 'err', 4000); done(); return; }
+    fetch(base + '/data/tools.json?_=' + Date.now(), { cache: 'no-store' })
+        .then(function(r){ return { ok: r.ok, status: r.status, text: r.ok ? r.text() : '' }; })
+        .then(function(res){
+            if (!res.ok) { toast('读取失败 HTTP ' + res.status, 'err', 6000); done(); return; }
+            return res.text.then(function(t){
+                try {
+                    var arr = JSON.parse(t);
+                    log('线上 data/tools.json 正常，共 ' + arr.length + ' 个工具', 'ok');
+                    toast('线上正常，共 ' + arr.length + ' 个工具 ✓', 'ok', 5000);
+                } catch (e) {
+                    toast('线上文件解析失败', 'err', 5000);
+                }
+                done();
+            });
+        })
+        .catch(function(){ toast('无法读取线上文件（跨域限制？）', 'warn', 6000); done(); });
 });
 
 $('btnClearCfg').addEventListener('click', function(){
@@ -474,40 +675,158 @@ $('btnClearCfg').addEventListener('click', function(){
     localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
     $('cfgToken').value = '';
     log('已清除本机保存的 Token', 'ok');
+    toast('已清除本机 Token', 'ok');
 });
 
-/* ================== 工具管理 ================== */
+/* ================== 工具管理（可排序 + 即时反馈） ================== */
+var toolsDirty = false;
+
+function markToolsDirty(){
+    toolsDirty = true;
+    $('btnSaveTools').classList.add('dirty');
+    $('btnSaveTools2').classList.add('dirty');
+    $('toolsDirtyTip').classList.add('show');
+}
+
+function clearToolsDirty(){
+    toolsDirty = false;
+    $('btnSaveTools').classList.remove('dirty');
+    $('btnSaveTools2').classList.remove('dirty');
+    $('toolsDirtyTip').classList.remove('show');
+}
+
+function renumberToolRows(){
+    var rows = $('toolsBody').querySelectorAll('tr');
+    rows.forEach(function(tr, i){ tr.querySelector('.idx').textContent = i + 1; });
+    $('toolCount').textContent = rows.length + ' 行' + (rows.length ? '（已显示 ' + Array.prototype.filter.call(rows, function(r){ return r.style.display !== 'none'; }).length + ' 行）' : '');
+}
+
 function toolRowHtml(t, i){
     return '<tr>'
-        + '<td>' + (i + 1) + '</td>'
+        + '<td class="handle" title="按住拖动可调整顺序">⠿</td>'
+        + '<td class="idx">' + (i + 1) + '</td>'
         + '<td><input type="text" class="t-name" value="' + esc(t.name) + '"></td>'
         + '<td><input type="text" class="t-url url-in" value="' + esc(t.url) + '"></td>'
-        + '<td><button class="btn danger small" onclick="this.closest(\'tr\').remove()">删</button></td>'
+        + '<td class="ops">'
+        + '<button class="btn small ghost js-up" title="上移">↑</button>'
+        + '<button class="btn small ghost js-down" title="下移">↓</button>'
+        + '<button class="btn small ghost js-top" title="移到最前">⤒</button>'
+        + '<button class="btn danger small js-del" title="删除本行">删</button>'
+        + '</td>'
         + '</tr>';
 }
 
+function attachRowEvents(tr){
+    tr.querySelector('.js-del').addEventListener('click', function(){
+        tr.remove();
+        renumberToolRows();
+        markToolsDirty();
+        toast('已删除该行（保存后才生效）', 'warn', 3000);
+    });
+    tr.querySelector('.js-up').addEventListener('click', function(){
+        var prev = tr.previousElementSibling;
+        if (!prev) { toast('已经是第一行了', 'warn', 2500); return; }
+        tr.parentNode.insertBefore(tr, prev);
+        renumberToolRows(); markToolsDirty();
+        tr.scrollIntoView({ block: 'nearest' });
+    });
+    tr.querySelector('.js-down').addEventListener('click', function(){
+        var next = tr.nextElementSibling;
+        if (!next) { toast('已经是最后一行了', 'warn', 2500); return; }
+        tr.parentNode.insertBefore(next, tr);
+        renumberToolRows(); markToolsDirty();
+        tr.scrollIntoView({ block: 'nearest' });
+    });
+    tr.querySelector('.js-top').addEventListener('click', function(){
+        if (!tr.previousElementSibling) { toast('已经在最前面', 'warn', 2500); return; }
+        tr.parentNode.insertBefore(tr, tr.parentNode.firstChild);
+        renumberToolRows(); markToolsDirty();
+        tr.scrollIntoView({ block: 'center' });
+    });
+    tr.querySelectorAll('input').forEach(function(inp){
+        inp.addEventListener('input', function(){ markToolsDirty(); });
+    });
+    // 行首 ⠿ 拖动排序
+    var handle = tr.querySelector('.handle');
+    var dragSrc = null;
+    handle.addEventListener('mousedown', function(){ tr.draggable = true; dragSrc = tr; });
+    handle.addEventListener('mouseup', function(){ tr.draggable = false; });
+    tr.addEventListener('dragstart', function(e){
+        dragSrc = tr;
+        tr.classList.add('dragging');
+        try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', ''); } catch (err) {}
+    });
+    tr.addEventListener('dragend', function(){
+        tr.draggable = false;
+        tr.classList.remove('dragging');
+        renumberToolRows();
+        markToolsDirty();
+    });
+    tr.addEventListener('dragover', function(e){
+        if (!dragSrc || dragSrc === tr) return;
+        e.preventDefault();
+        var box = tr.getBoundingClientRect();
+        var after = (e.clientY - box.top) > box.height / 2;
+        tr.parentNode.insertBefore(dragSrc, after ? tr.nextSibling : tr);
+    });
+    tr.addEventListener('drop', function(e){ e.preventDefault(); });
+}
+
+function addToolRow(toTop){
+    var tb = $('toolsBody');
+    var row = document.createElement('tr');
+    row.innerHTML = toolRowHtml({ name: '', url: 'https://' }, 0).replace(/^<tr>|<\/tr>$/g, '');
+    row.classList.add('row-new');
+    if (toTop && tb.firstChild) tb.insertBefore(row, tb.firstChild);
+    else tb.appendChild(row);
+    attachRowEvents(row);
+    renumberToolRows();
+    markToolsDirty();
+    // 新行自动进入视野并聚焦名称输入框
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function(){ row.querySelector('.t-name').focus(); }, 250);
+    toast('已添加新行，直接填名称和链接即可（默认追加到末尾，可用 ↑ ↓ 或拖动调整顺序）', 'info', 4500);
+}
+
+$('btnAddToolRow').addEventListener('click', function(){ addToolRow(false); });
+$('btnAddToolRow2').addEventListener('click', function(){ addToolRow(false); });
+
 $('btnLoadTools').addEventListener('click', function(){
+    var done = busy($('btnLoadTools'), '加载中...');
     log('正在从 GitHub 加载工具列表...', 'info');
     ghGetText('data/tools.json').then(function(r){
         var tools = JSON.parse(r.text);
         var tbody = $('toolsBody');
         tbody.innerHTML = tools.map(toolRowHtml).join('');
+        tbody.querySelectorAll('tr').forEach(attachRowEvents);
         $('toolsTable').style.display = 'table';
+        clearToolsDirty();
+        renumberToolRows();
         log('已加载 ' + tools.length + ' 个工具', 'ok');
+        toast('已加载 ' + tools.length + ' 个工具 ✓', 'ok');
+        done();
     }).catch(function(e){
         log('加载失败: ' + e.message, 'err');
+        toast('加载失败：' + e.message, 'err', 6000);
+        done();
     });
 });
 
-$('btnAddToolRow').addEventListener('click', function(){
-    var tb = $('toolsBody');
-    var idx = tb.children.length;
-    tb.insertAdjacentHTML('beforeend', toolRowHtml({name: '', url: 'https://'}, idx));
-    var last = tb.lastElementChild;
-    last.querySelector('.t-name').focus();
+/* 筛选行 */
+$('toolFilter').addEventListener('input', function(){
+    var kw = this.value.trim().toLowerCase();
+    var shown = 0;
+    $('toolsBody').querySelectorAll('tr').forEach(function(tr){
+        var name = tr.querySelector('.t-name').value.toLowerCase();
+        var url = tr.querySelector('.t-url').value.toLowerCase();
+        var hit = !kw || name.indexOf(kw) >= 0 || url.indexOf(kw) >= 0;
+        tr.style.display = hit ? '' : 'none';
+        if (hit) shown++;
+    });
+    $('toolCount').textContent = '筛选出 ' + shown + ' 行';
 });
 
-$('btnSaveTools').addEventListener('click', function(){
+function collectTools(){
     var rows = $('toolsBody').querySelectorAll('tr');
     var tools = [];
     rows.forEach(function(tr){
@@ -515,18 +834,49 @@ $('btnSaveTools').addEventListener('click', function(){
         var url = tr.querySelector('.t-url').value.trim();
         if (name && url && url !== 'https://') tools.push({ name: name, url: url });
     });
-    if (!tools.length) { log('列表为空，已取消保存（如需清空请直接在 GitHub 上改）', 'err'); return; }
-    log('正在提交 ' + tools.length + ' 个工具到 GitHub...', 'info');
-    ghPutText('data/tools.json', JSON.stringify(tools, null, 2), '后台更新：工具列表（共 ' + tools.length + ' 个）')
-        .then(function(){
-            log('工具列表已发布！Cloudflare 约 1 分钟后自动更新', 'ok');
-        })
-        .catch(function(e){ log('保存失败: ' + e.message, 'err'); });
-});
+    return tools;
+}
 
-/* ================== 博客管理 ================== */
-var blogData = [];        // 当前 blog.json 内容
-var editingIndex = -1;    // 正在编辑的文章下标（-1 = 新文章）
+function saveTools(btn){
+    var tools = collectTools();
+    if (!tools.length) { toast('列表为空，已取消保存', 'err', 5000); return; }
+    var json = JSON.stringify(tools, null, 2);
+    var done = busy(btn, '提交中...');
+    log('正在提交 ' + tools.length + ' 个工具到 GitHub（data/tools.json）...', 'info');
+    ghPutText('data/tools.json', json, '后台更新：工具列表（共 ' + tools.length + ' 个）')
+        .then(function(){
+            clearToolsDirty();
+            log('✓ 已提交到 GitHub：data/tools.json（' + tools.length + ' 个工具）', 'ok');
+            toast('已提交 ✓ ' + tools.length + ' 个工具已推送到 GitHub', 'ok', 5000);
+            done();
+            watchLive('data/tools.json', json, '工具列表');
+        })
+        .catch(function(e){
+            log('保存失败: ' + e.message, 'err');
+            toast('保存失败：' + e.message, 'err', 8000);
+            done();
+        });
+}
+
+$('btnSaveTools').addEventListener('click', function(){ saveTools($('btnSaveTools')); });
+$('btnSaveTools2').addEventListener('click', function(){ saveTools($('btnSaveTools2')); });
+
+/* ================== 博客管理（可排序） ================== */
+var blogData = [];
+var editingIndex = -1;
+var blogDirty = false;
+
+function markBlogDirty(){
+    blogDirty = true;
+    $('btnSaveBlog').classList.add('dirty');
+    $('blogDirtyTip').classList.add('show');
+}
+
+function clearBlogDirty(){
+    blogDirty = false;
+    $('btnSaveBlog').classList.remove('dirty');
+    $('blogDirtyTip').classList.remove('show');
+}
 
 function resetEditor(){
     editingIndex = -1;
@@ -547,20 +897,41 @@ $('pDate').value = new Date().toISOString().slice(0, 10);
 $('btnCancelEdit').addEventListener('click', function(){
     resetEditor();
     log('已退出编辑模式', 'info');
+    toast('已退出编辑', 'info', 2500);
 });
 
-function loadPostList(listHtml){
-    $('postList').innerHTML = listHtml || blogData.map(function(p, i){
+function loadPostList(){
+    if (!blogData.length) {
+        $('postList').innerHTML = '<p class="hint">暂无文章，在下面写一篇吧。</p>';
+        $('blogCount').textContent = '';
+        return;
+    }
+    $('postList').innerHTML = blogData.map(function(p, i){
         var isMd = /\.md$/i.test(p.file);
         return '<div class="post-item">'
+            + '<span class="p-order">' + (i + 1) + '.</span>'
             + '<span class="p-title">' + esc(p.title) + '</span>'
             + '<span class="p-date">' + esc(p.date) + '</span>'
             + '<span class="p-file">' + esc(p.file) + (isMd ? '' : '（旧版HTML）') + '</span>'
+            + '<span class="ops">'
+            + '<button class="btn small ghost" onclick="movePost(' + i + ', -1)" title="上移">↑</button>'
+            + '<button class="btn small ghost" onclick="movePost(' + i + ', 1)" title="下移">↓</button>'
             + '<button class="btn small" onclick="editPost(' + i + ')">编辑</button>'
             + '<button class="btn danger small" onclick="deletePost(' + i + ')">删除</button>'
+            + '</span>'
             + '</div>';
-    }).join('') || '<p class="hint">暂无文章</p>';
+    }).join('');
+    $('blogCount').textContent = '共 ' + blogData.length + ' 篇';
 }
+
+window.movePost = function(i, dir){
+    var j = i + dir;
+    if (j < 0 || j >= blogData.length) { toast(dir < 0 ? '已经是第一篇' : '已经是最后一篇', 'warn', 2200); return; }
+    var tmp = blogData[i]; blogData[i] = blogData[j]; blogData[j] = tmp;
+    loadPostList();
+    markBlogDirty();
+    toast('已把《' + blogData[i].title + '》移到第 ' + (i + 1) + ' 位，记得点「保存顺序并发布」', 'info', 4000);
+};
 
 window.editPost = function(i){
     var p = blogData[i];
@@ -580,17 +951,20 @@ window.editPost = function(i){
             $('mdContent').value = r.text;
             $('mdContent').disabled = false;
             log('正文已加载，修改后点「发布 / 保存」', 'ok');
+            toast('正文已加载 ✓', 'ok');
         }).catch(function(e){
             $('mdContent').value = '';
             $('mdContent').disabled = true;
             log('正文加载失败: ' + e.message, 'err');
+            toast('正文加载失败：' + e.message, 'err', 6000);
         });
     } else {
         $('mdContent').value = '【这是旧版 HTML 文章，正文请到 GitHub 网页编辑 ' + p.file + ' ；此处可修改标题/日期/标签/摘要】';
         $('mdContent').disabled = true;
     }
     document.querySelector('[data-tab="tabBlog"]').click();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('pTitle').focus();
+    $('pTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 window.deletePost = function(i){
@@ -599,17 +973,21 @@ window.deletePost = function(i){
     if (!confirm('确定删除文章《' + p.title + '》吗？此操作会从 GitHub 仓库中删除对应文件。')) return;
     var finish = function(){
         blogData.splice(i, 1);
-        ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台更新：删除文章《' + p.title + '》')
+        var json = JSON.stringify(blogData, null, 2);
+        ghPutText('data/blog.json', json, '后台更新：删除文章《' + p.title + '》')
             .then(function(){
                 loadPostList();
                 log('文章已删除并发布', 'ok');
+                toast('文章已删除 ✓', 'ok', 5000);
+                watchLive('data/blog.json', json, '文章列表');
             })
-            .catch(function(e){ log('列表更新失败: ' + e.message, 'err'); });
+            .catch(function(e){ log('列表更新失败: ' + e.message, 'err'); toast('列表更新失败：' + e.message, 'err', 7000); });
     };
     if (/\.md$/i.test(p.file)) {
         log('正在删除 ' + p.file + ' ...', 'info');
         ghDelete(p.file, '后台更新：删除 ' + p.file).then(finish).catch(function(e){
             log('删除文件失败: ' + e.message + '，尝试只更新列表', 'err');
+            toast('正文删除失败，仅更新列表', 'warn', 6000);
             finish();
         });
     } else {
@@ -618,41 +996,77 @@ window.deletePost = function(i){
 };
 
 $('btnLoadPosts').addEventListener('click', function(){
+    var done = busy($('btnLoadPosts'), '加载中...');
     log('正在从 GitHub 加载文章列表...', 'info');
     ghGetText('data/blog.json').then(function(r){
         blogData = JSON.parse(r.text);
         loadPostList();
+        clearBlogDirty();
         log('已加载 ' + blogData.length + ' 篇文章', 'ok');
+        toast('已加载 ' + blogData.length + ' 篇文章 ✓', 'ok');
+        done();
     }).catch(function(e){
         log('加载失败: ' + e.message, 'err');
+        toast('加载失败：' + e.message, 'err', 6000);
+        done();
     });
+});
+
+$('btnSaveBlog').addEventListener('click', function(){
+    var btn = $('btnSaveBlog');
+    if (!blogData.length) { toast('列表为空，已取消', 'err', 4000); return; }
+    var json = JSON.stringify(blogData, null, 2);
+    var done = busy(btn, '提交中...');
+    log('正在提交文章列表顺序到 GitHub（data/blog.json）...', 'info');
+    ghPutText('data/blog.json', json, '后台更新：文章列表顺序')
+        .then(function(){
+            clearBlogDirty();
+            log('✓ 已提交到 GitHub：文章顺序已更新', 'ok');
+            toast('顺序已发布 ✓', 'ok', 5000);
+            done();
+            watchLive('data/blog.json', json, '文章列表');
+        })
+        .catch(function(e){
+            log('保存失败: ' + e.message, 'err');
+            toast('保存失败：' + e.message, 'err', 8000);
+            done();
+        });
 });
 
 /* 发布 / 保存文章 */
 $('btnPublish').addEventListener('click', function(){
+    var btn = $('btnPublish');
     var title = $('pTitle').value.trim();
     var content = $('mdContent').value;
-    if (!title) { log('请填写文章标题', 'err'); return; }
+    if (!title) { toast('请填写文章标题', 'err', 4000); $('pTitle').focus(); return; }
     if ($('mdContent').disabled) {
-        // 旧版 HTML 文章：只更新元数据
         var p = blogData[editingIndex];
-        if (!p) { log('编辑状态异常，请重新加载列表', 'err'); return; }
+        if (!p) { toast('编辑状态异常，请重新加载列表', 'err', 5000); return; }
         p.title = title;
         p.date = $('pDate').value || p.date;
         p.tags = $('pTags').value.split(/[,，]/).map(function(s){ return s.trim(); }).filter(Boolean);
         p.excerpt = $('pExcerpt').value.trim();
-        ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台更新：修改文章信息《' + title + '》')
-            .then(function(){ log('文章信息已更新并发布', 'ok'); resetEditor(); })
-            .catch(function(e){ log('保存失败: ' + e.message, 'err'); });
+        var j2 = JSON.stringify(blogData, null, 2);
+        var done2 = busy(btn, '提交中...');
+        ghPutText('data/blog.json', j2, '后台更新：修改文章信息《' + title + '》')
+            .then(function(){
+                log('文章信息已更新并发布', 'ok');
+                toast('文章信息已更新 ✓', 'ok', 5000);
+                done2();
+                loadPostList();
+                resetEditor();
+                watchLive('data/blog.json', j2, '文章信息');
+            })
+            .catch(function(e){ log('保存失败: ' + e.message, 'err'); toast('保存失败：' + e.message, 'err', 8000); done2(); });
         return;
     }
-    if (!content.trim()) { log('正文不能为空', 'err'); return; }
+    if (!content.trim()) { toast('正文不能为空', 'err', 4000); $('mdContent').focus(); return; }
 
     var isNew = editingIndex < 0;
     var slug = $('pSlug').value.trim();
     if (isNew) {
         if (!slug) slug = new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Date.now().toString(36);
-        if (!/^[A-Za-z0-9\-_]+$/.test(slug)) { log('文件名只能用英文、数字、横杠、下划线', 'err'); return; }
+        if (!/^[A-Za-z0-9\-_]+$/.test(slug)) { toast('文件名只能用英文、数字、横杠、下划线', 'err', 6000); $('pSlug').focus(); return; }
     } else {
         slug = blogData[editingIndex].file.replace(/^posts\//, '').replace(/\.md$/i, '');
     }
@@ -666,14 +1080,17 @@ $('btnPublish').addEventListener('click', function(){
     };
 
     log((isNew ? '正在发布' : '正在保存') + ' ' + entry.file + ' ...', 'info');
+    var done = busy(btn, '发布中...');
+    toast('① 正在提交正文到 GitHub...', 'info', 3500);
 
     ghPutText(entry.file, content, '后台发布：' + title)
         .then(function(){
+            log('✓ 第 1 步完成：正文已写入 ' + entry.file, 'ok');
+            toast('② 正文已写入，正在更新文章列表...', 'info', 3500);
             if (isNew) {
-                // 检查 blog.json 是否已有同名条目（重复发布会复用文件名）
                 return ghGetText('data/blog.json').then(function(r){
                     blogData = JSON.parse(r.text);
-                    blogData = blogData.filter(function(p){ return p.file !== entry.file; });
+                    blogData = blogData.filter(function(x){ return x.file !== entry.file; });
                     blogData.unshift(entry);
                     return ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台发布：新增文章《' + title + '》');
                 });
@@ -683,11 +1100,18 @@ $('btnPublish').addEventListener('click', function(){
             }
         })
         .then(function(){
-            log('文章已发布！约 1 分钟后 Cloudflare 自动上线', 'ok');
+            log('✓ 第 2 步完成：文章列表已更新', 'ok');
+            toast('文章已提交到 GitHub ✓ 正在等待部署', 'ok', 5000);
             loadPostList();
             resetEditor();
+            done();
+            watchLive('data/blog.json', JSON.stringify(blogData, null, 2), '《' + title + '》');
         })
-        .catch(function(e){ log('发布失败: ' + e.message + '（正文文件可能已提交，可重试或到 GitHub 查看）', 'err'); });
+        .catch(function(e){
+            log('发布失败: ' + e.message, 'err');
+            toast('发布失败：' + e.message, 'err', 9000);
+            done();
+        });
 });
 
 /* 编辑器插图：上传后插入 markdown 图片语法 */
@@ -702,17 +1126,21 @@ $('imgPicker').addEventListener('change', function(){
     files.forEach(function(f){
         var name = f.name.replace(/\s+/g, '-');
         var path = 'images/' + Date.now().toString(36) + '-' + name;
+        var doneBtn = busy($('btnInsertImg'), '上传中...');
         fileToB64(f).then(function(b64){
             return ghPutBinary(path, b64, '后台上传图片: ' + name);
         }).then(function(){
             var ins = '![](' + path + ')\n\n';
             ta.value = ta.value.slice(0, pos) + ins + ta.value.slice(pos);
             pos += ins.length;
-            done++;
-            log('图片已上传并插入: ' + path, 'ok');
-            if (done === files.length) $('imgPicker').value = '';
+            log('图片已上传: ' + path, 'ok');
+            toast('图片已上传并插入到光标处 ✓', 'ok', 4000);
+            doneBtn();
+            if (++done === files.length) $('imgPicker').value = '';
         }).catch(function(e){
             log('图片 ' + f.name + ' 上传失败: ' + e.message, 'err');
+            toast('图片上传失败：' + e.message, 'err', 6000);
+            doneBtn();
             done++;
         });
     });
@@ -721,14 +1149,16 @@ $('imgPicker').addEventListener('change', function(){
 /* ================== 文件上传 ================== */
 $('btnUpload').addEventListener('click', function(){
     var files = Array.from($('filePicker').files || []);
-    if (!files.length) { log('请先选择文件', 'err'); return; }
+    if (!files.length) { toast('请先选择文件', 'err', 4000); return; }
     var dir = $('upPath').value.trim() || 'images/';
     if (dir.slice(-1) !== '/') dir += '/';
+    var okCount = 0;
 
     files.forEach(function(f){
         var name = f.name.replace(/\s+/g, '-');
         var path = dir + name;
         log('正在上传 ' + path + ' (' + (f.size / 1024 / 1024).toFixed(2) + ' MB) ...', 'info');
+        toast('正在上传 ' + name + ' ...', 'info', 3000);
         fileToB64(f).then(function(b64){
             return ghPutBinary(path, b64, '后台上传文件: ' + name);
         }).then(function(){
@@ -738,10 +1168,31 @@ $('btnUpload').addEventListener('click', function(){
                 + '<button class="btn small" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.slice(1).trim());this.textContent=\'已复制\'">复制路径</button>';
             $('uploadResults').appendChild(div);
             log('上传成功: ' + path, 'ok');
+            okCount++;
+            toast('上传完成 ✓ ' + name, 'ok', 4000);
         }).catch(function(e){
             log('上传失败 ' + f.name + ': ' + e.message, 'err');
+            toast('上传失败 ' + name + '：' + e.message, 'err', 7000);
         });
     });
+});
+
+/* 首次打开提示 */
+window.addEventListener('load', function(){
+    var cfg = getCfg();
+    if (!cfg.token) {
+        log('欢迎！请先到右上方「连接配置」填写 GitHub Token 并保存。', 'info');
+        toast('第一次使用？先去「连接配置」填 Token', 'info', 7000);
+    } else {
+        var auto = busy($('btnLoadPosts'), '自动加载中...');
+        ghGetText('data/blog.json').then(function(r){
+            blogData = JSON.parse(r.text);
+            loadPostList();
+            clearBlogDirty();
+            if (blogData.length) log('已自动载入了 ' + blogData.length + ' 篇文章列表', 'ok');
+            auto();
+        }).catch(function(){ auto(); });
+    }
 });
 </script>
 </body>
