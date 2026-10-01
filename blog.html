@@ -301,33 +301,7 @@ p, li, legend, h1, .article-excerpt, .article-meta {
     
     <fieldset class="fl">
         <legend>文章列表</legend>
-        <ul class="article-list">
-            <li class="article-item">
-                <a href="TVbox.html" class="article-title">看剧神器TVBox</a>
-                <div class="article-meta">
-                    <span>发布时间：2024-03-20</span>
-                    <span class="tag">影视</span>
-                    <span class="tag">TVBox</span>
-                    <span class="tag">安卓</span>
-                </div>
-                <div class="article-excerpt">
-                    TVBox是一款强大的视频播放软件，支持在线播放全网影视资源。本文详细介绍TVBox的安装配置方法，包括软件下载、接口设置、使用教程等内容...
-                </div>
-            </li>
-            
-            <li class="article-item">
-                <a href="office2019.html" class="article-title">Office2019批量授权版</a>
-                <div class="article-meta">
-                    <span>发布时间：2024-03-18</span>
-                    <span class="tag">Office</span>
-                    <span class="tag">软件安装</span>
-                    <span class="tag">激活教程</span>
-                </div>
-                <div class="article-excerpt">
-                    详细介绍Office2019批量授权版的下载、安装与激活过程。包括Office部署工具的使用、版本选择、KMS激活方法等，帮助用户轻松完成Office的安装与激活...
-                </div>
-            </li>
-        </ul>
+        <ul class="article-list" id="articleList"></ul>
     </fieldset>
 </div>
 
@@ -507,5 +481,31 @@ document.addEventListener('click', (e) => {
 });
 </script>
 
+<script>
+// 从 data/blog.json 动态加载文章列表（由后台管理系统维护）
+(function(){
+  fetch('./data/blog.json', {cache: 'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(posts){
+      var list = document.getElementById('articleList');
+      var html = '';
+      posts.forEach(function(p){
+        var href = /\.md$/.test(p.file) ? ('post.html?p=' + encodeURIComponent(p.file)) : p.file;
+        var tags = (p.tags || []).map(function(t){
+          return '<span class="tag">' + t + '</span>';
+        }).join('');
+        html += '<li class="article-item">'
+             +  '<a href="' + href + '" class="article-title">' + p.title + '</a>'
+             +  '<div class="article-meta"><span>发布时间：' + p.date + '</span>' + tags + '</div>'
+             +  '<div class="article-excerpt">' + p.excerpt + '</div>'
+             +  '</li>';
+      });
+      list.innerHTML = html;
+    })
+    .catch(function(){
+      document.getElementById('articleList').innerHTML = '<li class="article-item" style="color:#8892b0;text-align:center;">文章列表加载失败，请刷新重试</li>';
+    });
+})();
+</script>
 </body>
 </html> 

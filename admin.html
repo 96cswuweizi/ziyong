@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>网站管理后台</title>
+<link rel="icon" href="./images/logo2.png" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Microsoft YaHei', 微软雅黑, sans-serif;
+    background: linear-gradient(to bottom, #0a192f, #112240);
+    color: #8892b0;
+    min-height: 100vh;
+    padding: 30px 15px 60px;
+}
+
+.wrap { max-width: 960px; margin: 0 auto; }
+
+h1.title {
+    text-align: center;
+    color: #ccd6f6;
+    font-size: 1.8em;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.sub { text-align: center; color: #64ffda; font-size: 13px; margin-bottom: 25px; }
+
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+
+.tab-btn {
+    padding: 9px 20px;
+    background: rgba(17, 34, 64, 0.6);
+    border: 1px solid #233554;
+    border-radius: 6px;
+    color: #8892b0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .25s;
+    font-family: inherit;
+}
+.tab-btn:hover { color: #64ffda; border-color: #64ffda; }
+.tab-btn.active { color: #64ffda; border-color: #64ffda; background: rgba(100, 255, 218, 0.08); }
+
+.panel {
+    display: none;
+    background: rgba(17, 34, 64, 0.55);
+    border: 1px solid #233554;
+    border-radius: 10px;
+    padding: 25px;
+    backdrop-filter: blur(5px);
+}
+.panel.active { display: block; }
+
+.panel h2 { color: #ccd6f6; font-size: 1.15em; margin-bottom: 15px; }
+
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; color: #64ffda; font-size: 13px; margin-bottom: 6px; }
+
+input[type=text], input[type=password], input[type=date], textarea, select {
+    width: 100%;
+    background: rgba(10, 25, 47, 0.8);
+    border: 1px solid #233554;
+    border-radius: 6px;
+    color: #ccd6f6;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color .25s;
+}
+input:focus, textarea:focus { outline: none; border-color: #64ffda; }
+textarea { resize: vertical; line-height: 1.7; }
+textarea#mdContent { min-height: 320px; font-family: Consolas, Monaco, monospace; font-size: 13.5px; }
+
+.btn {
+    display: inline-block;
+    padding: 9px 22px;
+    background: rgba(100, 255, 218, 0.08);
+    border: 1px solid #64ffda;
+    border-radius: 6px;
+    color: #64ffda;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all .25s;
+    margin-right: 8px;
+    margin-top: 4px;
+}
+.btn:hover { background: rgba(100, 255, 218, 0.18); transform: translateY(-1px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn.danger { border-color: #ff6b6b; color: #ff6b6b; background: rgba(255, 107, 107, 0.06); }
+.btn.danger:hover { background: rgba(255, 107, 107, 0.15); }
+.btn.small { padding: 5px 12px; font-size: 12px; }
+
+.hint { font-size: 12.5px; color: #5d6b8a; line-height: 1.7; margin-top: 8px; }
+.hint a { color: #64ffda; }
+
+#statusBox {
+    margin-top: 20px;
+    background: rgba(10, 25, 47, 0.8);
+    border: 1px solid #233554;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 13px;
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+    line-height: 1.8;
+}
+.log-ok { color: #64ffda; }
+.log-err { color: #ff8787; }
+.log-info { color: #8892b0; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { border: 1px solid #233554; padding: 7px 9px; font-size: 13px; text-align: left; }
+th { color: #64ffda; background: rgba(100, 255, 218, 0.04); }
+td input { padding: 6px 8px; font-size: 13px; }
+td .url-in { width: 100%; min-width: 220px; }
+
+.post-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 13px;
+    border: 1px solid #233554;
+    border-radius: 7px;
+    margin-bottom: 9px;
+    background: rgba(10, 25, 47, 0.5);
+    flex-wrap: wrap;
+}
+.post-item .p-title { color: #ccd6f6; font-size: 14.5px; flex: 1; min-width: 180px; }
+.post-item .p-date { font-size: 12.5px; color: #5d6b8a; }
+.post-item .p-file { font-size: 11.5px; color: #5d6b8a; }
+
+.divider { border: none; border-top: 1px dashed #233554; margin: 22px 0; }
+
+.help-ol { padding-left: 22px; line-height: 2; font-size: 14px; }
+.help-ol code { background: #0d1f38; border: 1px solid #233554; border-radius: 4px; padding: 1px 7px; color: #64ffda; font-size: 13px; }
+.help-box { background: rgba(100, 255, 218, 0.05); border-left: 3px solid #64ffda; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 13.5px; line-height: 1.9; margin: 14px 0; }
+
+.upload-result { font-size: 13px; padding: 8px 12px; border: 1px dashed #233554; border-radius: 6px; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.upload-result code { color: #64ffda; word-break: break-all; }
+
+@media (max-width: 640px) {
+    .panel { padding: 16px; }
+    h1.title { font-size: 1.4em; }
+    .tab-btn { padding: 8px 13px; font-size: 13px; }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+    <h1 class="title">网站管理后台</h1>
+    <p class="sub">GitHub + Cloudflare Pages · 免服务器 · 改完自动部署上线</p>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tabCfg">连接配置</button>
+        <button class="tab-btn" data-tab="tabBlog">博客管理</button>
+        <button class="tab-btn" data-tab="tabTools">工具管理</button>
+        <button class="tab-btn" data-tab="tabUpload">图片/文件上传</button>
+        <button class="tab-btn" data-tab="tabHelp">使用帮助</button>
+    </div>
+
+    <!-- ============ 连接配置 ============ -->
+    <div class="panel active" id="tabCfg">
+        <h2>GitHub 连接配置（只需设置一次）</h2>
+        <div class="form-row">
+            <label>GitHub 用户名</label>
+            <input type="text" id="cfgOwner" placeholder="例如 96cswuweizi">
+        </div>
+        <div class="form-row">
+            <label>仓库名</label>
+            <input type="text" id="cfgRepo" placeholder="例如 ziyong">
+        </div>
+        <div class="form-row">
+            <label>分支</label>
+            <input type="text" id="cfgBranch" placeholder="例如 wangzhan">
+        </div>
+        <div class="form-row">
+            <label>GitHub Token（Fine-grained，只需 Contents 读写权限）</label>
+            <input type="password" id="cfgToken" placeholder="github_pat_ 开头，只保存在你本机浏览器里">
+        </div>
+        <button class="btn" id="btnSaveCfg">保存配置</button>
+        <button class="btn" id="btnTestConn">测试连接</button>
+        <button class="btn danger" id="btnClearCfg">清除本机 Token</button>
+        <p class="hint">Token 仅保存在你当前浏览器的 localStorage 中，不会上传到任何服务器（本页面是纯静态页面，没有后端）。详细创建步骤见「使用帮助」。</p>
+    </div>
+
+    <!-- ============ 博客管理 ============ -->
+    <div class="panel" id="tabBlog">
+        <h2>博客文章管理</h2>
+        <button class="btn" id="btnLoadPosts">刷新文章列表</button>
+        <div id="postList" style="margin-top: 14px;"><p class="hint">点击「刷新文章列表」从 GitHub 加载。</p></div>
+
+        <hr class="divider">
+
+        <h2 id="editorTitle">写新文章</h2>
+        <div class="form-row">
+            <label>文章标题 *</label>
+            <input type="text" id="pTitle" placeholder="例如：我的新工具分享">
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <div class="form-row" style="flex:1; min-width:150px;">
+                <label>发布日期</label>
+                <input type="date" id="pDate">
+            </div>
+            <div class="form-row" style="flex:1; min-width:150px;">
+                <label>文件名（英文/数字/横杠）</label>
+                <input type="text" id="pSlug" placeholder="留空自动生成">
+            </div>
+        </div>
+        <div class="form-row">
+            <label>标签（用逗号分隔）</label>
+            <input type="text" id="pTags" placeholder="例如： 软件, 教程">
+        </div>
+        <div class="form-row">
+            <label>摘要（显示在博客列表页）</label>
+            <textarea id="pExcerpt" rows="2" placeholder="一两句话简介..."></textarea>
+        </div>
+        <div class="form-row">
+            <label>正文（支持 Markdown 语法）</label>
+            <textarea id="mdContent" placeholder="# 标题&#10;&#10;在这里写正文... 支持 **加粗**、[链接](url)、图片、代码块等"></textarea>
+        </div>
+        <button class="btn" id="btnInsertImg">插入图片（自动上传）</button>
+        <input type="file" id="imgPicker" accept="image/*" multiple style="display:none">
+        <br><br>
+        <button class="btn" id="btnPublish">发布 / 保存</button>
+        <button class="btn danger" id="btnCancelEdit" style="display:none;">取消编辑</button>
+        <p class="hint">发布 = 提交到 GitHub → Cloudflare Pages 约 1 分钟内自动上线。插入图片会自动上传到 images/ 目录并把 <code style="color:#64ffda;">![](images/xxx.png)</code> 加到光标处。</p>
+    </div>
+
+    <!-- ============ 工具管理 ============ -->
+    <div class="panel" id="tabTools">
+        <h2>工具页链接管理</h2>
+        <button class="btn" id="btnLoadTools">加载工具列表</button>
+        <button class="btn" id="btnAddToolRow">添加一行</button>
+        <button class="btn" id="btnSaveTools">保存并发布</button>
+        <p class="hint">加载后可直接修改名称/链接，点行尾删除；「保存并发布」才会真正提交到 GitHub。</p>
+        <div style="overflow-x:auto;">
+        <table id="toolsTable" style="display:none;">
+            <thead><tr><th style="width:44px;">#</th><th style="width:220px;">名称</th><th>链接</th><th style="width:60px;">删除</th></tr></thead>
+            <tbody id="toolsBody"></tbody>
+        </table>
+        </div>
+    </div>
+
+    <!-- ============ 文件上传 ============ -->
+    <div class="panel" id="tabUpload">
+        <h2>上传图片 / 文件到仓库</h2>
+        <div class="form-row">
+            <label>存放目录（以 / 结尾）</label>
+            <input type="text" id="upPath" value="images/">
+        </div>
+        <div class="form-row">
+            <label>选择文件（可多选，单个建议小于 20MB）</label>
+            <input type="file" id="filePicker" multiple>
+        </div>
+        <button class="btn" id="btnUpload">开始上传</button>
+        <div id="uploadResults" style="margin-top:14px;"></div>
+        <p class="hint">上传后把返回的相对路径粘贴进文章即可，例如 <code style="color:#64ffda;">![](images/xxx.png)</code>。大文件（软件安装包等）不建议传 GitHub，请继续用蓝奏云/123盘等网盘链接。</p>
+    </div>
+
+    <!-- ============ 使用帮助 ============ -->
+    <div class="panel" id="tabHelp">
+        <h2>首次使用：创建 GitHub Token（约 2 分钟）</h2>
+        <ol class="help-ol">
+            <li>登录 GitHub，点右上角头像 → <code>Settings</code></li>
+            <li>左侧最底部 <code>Developer settings</code> → <code>Personal access tokens</code> → <code>Fine-grained tokens</code></li>
+            <li>点 <code>Generate new token</code>，名字随意填（如 <code>网站后台</code>），过期时间可选长一些或 No expiration</li>
+            <li><code>Repository access</code> 选 <code>Only select repositories</code>，只勾选你的网站仓库</li>
+            <li><code>Permissions</code> 里找到 <code>Contents</code>，选 <code>Read and write</code>（其他权限都不用给）</li>
+            <li>点生成，复制 <code>github_pat_</code> 开头的 Token，回到本页「连接配置」里粘贴保存</li>
+        </ol>
+        <div class="help-box">
+            <b style="color:#ccd6f6;">日常使用流程：</b><br>
+            ① 打开 <code>你的域名/admin.html</code> → ② 写文章 / 加工具 / 传图片 → ③ 点保存发布 → ④ 等约 1 分钟，Cloudflare 自动更新网站。<br>
+            手机浏览器也能用，配置需在每台设备上分别填一次。
+        </div>
+        <div class="help-box">
+            <b style="color:#ccd6f6;">安全说明：</b><br>
+            · 本后台是纯静态页面，没有后端，Token 只存在你自己浏览器的 localStorage 里；<br>
+            · 别人即使打开这个页面，没有你的 Token 也无法做任何操作；<br>
+            · Token 只授予了本仓库的 Contents 读写权限，即使泄露也无法动你其他东西；<br>
+            · 在公共电脑上用完后，请回「连接配置」点「清除本机 Token」。
+        </div>
+        <div class="help-box">
+            <b style="color:#ccd6f6;">数据存在哪里？</b><br>
+            · 工具列表 → <code>data/tools.json</code>　· 文章列表 → <code>data/blog.json</code><br>
+            · 文章正文 → <code>posts/*.md</code>　· 图片 → <code>images/</code><br>
+            全部就是 GitHub 仓库里的文件，任何工具（GitHub 网页、git 命令）都能直接改，后台只是让你改得更省事。
+        </div>
+    </div>
+
+    <div id="statusBox"></div>
+</div>
+
+<script>
+/* ================== 基础工具 ================== */
+var CFG_KEY = 'site_admin_cfg';
+
+function $(id){ return document.getElementById(id); }
+
+function getCfg(){
+    try { return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch(e){ return {}; }
+}
+
+function log(msg, type){
+    var box = $('statusBox');
+    box.style.display = 'block';
+    var line = document.createElement('div');
+    var t = new Date().toTimeString().slice(0, 8);
+    line.className = type === 'ok' ? 'log-ok' : (type === 'err' ? 'log-err' : 'log-info');
+    line.textContent = '[' + t + '] ' + msg;
+    box.appendChild(line);
+    box.scrollTop = box.scrollHeight;
+}
+
+function utf8ToB64(str){
+    var bytes = new TextEncoder().encode(str);
+    var bin = '', CH = 0x8000;
+    for (var i = 0; i < bytes.length; i += CH) {
+        bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    }
+    return btoa(bin);
+}
+
+function b64ToUtf8(b64){
+    var bin = atob(String(b64).replace(/\s/g, ''));
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+}
+
+function fileToB64(file){
+    return new Promise(function(resolve, reject){
+        var fr = new FileReader();
+        fr.onload = function(){ resolve(fr.result.split(',')[1]); };
+        fr.onerror = reject;
+        fr.readAsDataURL(file);
+    });
+}
+
+function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ================== GitHub API ================== */
+function repoPath(p){
+    var cfg = getCfg();
+    return '/repos/' + cfg.owner + '/' + cfg.repo + '/contents/' +
+           p.split('/').map(encodeURIComponent).join('/') +
+           '?ref=' + encodeURIComponent(cfg.branch || 'main');
+}
+
+function ghFetch(path, opts){
+    var cfg = getCfg();
+    if (!cfg.token) return Promise.reject(new Error('请先在「连接配置」里填写并保存 GitHub Token'));
+    opts = opts || {};
+    return fetch('https://api.github.com' + path, {
+        method: opts.method || 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + cfg.token,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'Content-Type': 'application/json'
+        },
+        body: opts.body
+    }).then(function(res){
+        if (res.ok) return res;
+        if (res.status === 404) { var e = new Error('NOT_FOUND'); e.status = 404; throw e; }
+        return res.json().catch(function(){ return {}; }).then(function(j){
+            throw new Error('GitHub API 错误: ' + (j.message || res.status));
+        });
+    });
+}
+
+// 读取文本文件（返回 {sha, text}）；文件不存在时抛 404
+function ghGetText(path){
+    return ghFetch(repoPath(path)).then(function(res){ return res.json(); }).then(function(j){
+        return { sha: j.sha, text: j.content ? b64ToUtf8(j.content) : '' };
+    });
+}
+
+// 写入文本文件（自动带上已存在文件的 sha）
+function ghPutText(path, text, message){
+    var payload = { message: message, branch: getCfg().branch || 'main', content: utf8ToB64(text) };
+    return ghGetText(path).then(function(cur){
+        payload.sha = cur.sha;
+        return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) });
+    }).catch(function(e){
+        if (e.status !== 404) throw e;
+        return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) });
+    });
+}
+
+function ghPutBinary(path, b64, message){
+    var payload = { message: message, branch: getCfg().branch || 'main', content: b64 };
+    return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) }).catch(function(e){
+        if (e.status !== 409) throw e;
+        // 已存在则带上 sha 覆盖
+        return ghGetText(path).then(function(cur){
+            payload.sha = cur.sha;
+            return ghFetch(repoPath(path), { method: 'PUT', body: JSON.stringify(payload) });
+        });
+    });
+}
+
+function ghDelete(path, message){
+    return ghGetText(path).then(function(cur){
+        return ghFetch(repoPath(path), {
+            method: 'DELETE',
+            body: JSON.stringify({ message: message, sha: cur.sha, branch: getCfg().branch || 'main' })
+        });
+    });
+}
+
+/* ================== Tab 切换 ================== */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        $(btn.dataset.tab).classList.add('active');
+    });
+});
+
+/* ================== 连接配置 ================== */
+function fillCfgForm(){
+    var cfg = getCfg();
+    $('cfgOwner').value = cfg.owner || '96cswuweizi';
+    $('cfgRepo').value = cfg.repo || 'ziyong';
+    $('cfgBranch').value = cfg.branch || 'wangzhan';
+    $('cfgToken').value = cfg.token || '';
+}
+fillCfgForm();
+
+$('btnSaveCfg').addEventListener('click', function(){
+    var cfg = {
+        owner: $('cfgOwner').value.trim(),
+        repo: $('cfgRepo').value.trim(),
+        branch: $('cfgBranch').value.trim() || 'main',
+        token: $('cfgToken').value.trim()
+    };
+    if (!cfg.owner || !cfg.repo || !cfg.token) { log('请把用户名、仓库、Token 都填上', 'err'); return; }
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    log('配置已保存到本机浏览器', 'ok');
+});
+
+$('btnTestConn').addEventListener('click', function(){
+    var cfg = {
+        owner: $('cfgOwner').value.trim(),
+        repo: $('cfgRepo').value.trim(),
+        branch: $('cfgBranch').value.trim() || 'main',
+        token: $('cfgToken').value.trim()
+    };
+    if (!cfg.token) { log('请先填写 Token', 'err'); return; }
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    log('正在测试连接 ' + cfg.owner + '/' + cfg.repo + ' ...', 'info');
+    ghFetch('/repos/' + cfg.owner + '/' + cfg.repo)
+        .then(function(res){ return res.json(); })
+        .then(function(j){
+            log('连接成功！仓库: ' + j.full_name + '，默认分支: ' + j.default_branch + (j.default_branch !== cfg.branch ? '（注意：你配置的分支是 ' + cfg.branch + '）' : ''), 'ok');
+        })
+        .catch(function(e){ log('连接失败: ' + e.message, 'err'); });
+});
+
+$('btnClearCfg').addEventListener('click', function(){
+    var cfg = getCfg();
+    delete cfg.token;
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    $('cfgToken').value = '';
+    log('已清除本机保存的 Token', 'ok');
+});
+
+/* ================== 工具管理 ================== */
+function toolRowHtml(t, i){
+    return '<tr>'
+        + '<td>' + (i + 1) + '</td>'
+        + '<td><input type="text" class="t-name" value="' + esc(t.name) + '"></td>'
+        + '<td><input type="text" class="t-url url-in" value="' + esc(t.url) + '"></td>'
+        + '<td><button class="btn danger small" onclick="this.closest(\'tr\').remove()">删</button></td>'
+        + '</tr>';
+}
+
+$('btnLoadTools').addEventListener('click', function(){
+    log('正在从 GitHub 加载工具列表...', 'info');
+    ghGetText('data/tools.json').then(function(r){
+        var tools = JSON.parse(r.text);
+        var tbody = $('toolsBody');
+        tbody.innerHTML = tools.map(toolRowHtml).join('');
+        $('toolsTable').style.display = 'table';
+        log('已加载 ' + tools.length + ' 个工具', 'ok');
+    }).catch(function(e){
+        log('加载失败: ' + e.message, 'err');
+    });
+});
+
+$('btnAddToolRow').addEventListener('click', function(){
+    var tb = $('toolsBody');
+    var idx = tb.children.length;
+    tb.insertAdjacentHTML('beforeend', toolRowHtml({name: '', url: 'https://'}, idx));
+    var last = tb.lastElementChild;
+    last.querySelector('.t-name').focus();
+});
+
+$('btnSaveTools').addEventListener('click', function(){
+    var rows = $('toolsBody').querySelectorAll('tr');
+    var tools = [];
+    rows.forEach(function(tr){
+        var name = tr.querySelector('.t-name').value.trim();
+        var url = tr.querySelector('.t-url').value.trim();
+        if (name && url && url !== 'https://') tools.push({ name: name, url: url });
+    });
+    if (!tools.length) { log('列表为空，已取消保存（如需清空请直接在 GitHub 上改）', 'err'); return; }
+    log('正在提交 ' + tools.length + ' 个工具到 GitHub...', 'info');
+    ghPutText('data/tools.json', JSON.stringify(tools, null, 2), '后台更新：工具列表（共 ' + tools.length + ' 个）')
+        .then(function(){
+            log('工具列表已发布！Cloudflare 约 1 分钟后自动更新', 'ok');
+        })
+        .catch(function(e){ log('保存失败: ' + e.message, 'err'); });
+});
+
+/* ================== 博客管理 ================== */
+var blogData = [];        // 当前 blog.json 内容
+var editingIndex = -1;    // 正在编辑的文章下标（-1 = 新文章）
+
+function resetEditor(){
+    editingIndex = -1;
+    $('editorTitle').textContent = '写新文章';
+    $('btnCancelEdit').style.display = 'none';
+    $('pTitle').value = '';
+    $('pDate').value = new Date().toISOString().slice(0, 10);
+    $('pSlug').value = '';
+    $('pSlug').disabled = false;
+    $('pTags').value = '';
+    $('pExcerpt').value = '';
+    $('mdContent').value = '';
+    $('mdContent').disabled = false;
+}
+
+$('pDate').value = new Date().toISOString().slice(0, 10);
+
+$('btnCancelEdit').addEventListener('click', function(){
+    resetEditor();
+    log('已退出编辑模式', 'info');
+});
+
+function loadPostList(listHtml){
+    $('postList').innerHTML = listHtml || blogData.map(function(p, i){
+        var isMd = /\.md$/i.test(p.file);
+        return '<div class="post-item">'
+            + '<span class="p-title">' + esc(p.title) + '</span>'
+            + '<span class="p-date">' + esc(p.date) + '</span>'
+            + '<span class="p-file">' + esc(p.file) + (isMd ? '' : '（旧版HTML）') + '</span>'
+            + '<button class="btn small" onclick="editPost(' + i + ')">编辑</button>'
+            + '<button class="btn danger small" onclick="deletePost(' + i + ')">删除</button>'
+            + '</div>';
+    }).join('') || '<p class="hint">暂无文章</p>';
+}
+
+window.editPost = function(i){
+    var p = blogData[i];
+    if (!p) return;
+    editingIndex = i;
+    $('editorTitle').textContent = '编辑文章：' + p.title;
+    $('btnCancelEdit').style.display = 'inline-block';
+    $('pTitle').value = p.title || '';
+    $('pDate').value = p.date || '';
+    $('pSlug').value = p.file ? p.file.replace(/^posts\//, '').replace(/\.md$/i, '') : '';
+    $('pSlug').disabled = true;
+    $('pTags').value = (p.tags || []).join(', ');
+    $('pExcerpt').value = p.excerpt || '';
+    if (/\.md$/i.test(p.file)) {
+        log('正在加载正文 ' + p.file + ' ...', 'info');
+        ghGetText(p.file).then(function(r){
+            $('mdContent').value = r.text;
+            $('mdContent').disabled = false;
+            log('正文已加载，修改后点「发布 / 保存」', 'ok');
+        }).catch(function(e){
+            $('mdContent').value = '';
+            $('mdContent').disabled = true;
+            log('正文加载失败: ' + e.message, 'err');
+        });
+    } else {
+        $('mdContent').value = '【这是旧版 HTML 文章，正文请到 GitHub 网页编辑 ' + p.file + ' ；此处可修改标题/日期/标签/摘要】';
+        $('mdContent').disabled = true;
+    }
+    document.querySelector('[data-tab="tabBlog"]').click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.deletePost = function(i){
+    var p = blogData[i];
+    if (!p) return;
+    if (!confirm('确定删除文章《' + p.title + '》吗？此操作会从 GitHub 仓库中删除对应文件。')) return;
+    var finish = function(){
+        blogData.splice(i, 1);
+        ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台更新：删除文章《' + p.title + '》')
+            .then(function(){
+                loadPostList();
+                log('文章已删除并发布', 'ok');
+            })
+            .catch(function(e){ log('列表更新失败: ' + e.message, 'err'); });
+    };
+    if (/\.md$/i.test(p.file)) {
+        log('正在删除 ' + p.file + ' ...', 'info');
+        ghDelete(p.file, '后台更新：删除 ' + p.file).then(finish).catch(function(e){
+            log('删除文件失败: ' + e.message + '，尝试只更新列表', 'err');
+            finish();
+        });
+    } else {
+        finish();
+    }
+};
+
+$('btnLoadPosts').addEventListener('click', function(){
+    log('正在从 GitHub 加载文章列表...', 'info');
+    ghGetText('data/blog.json').then(function(r){
+        blogData = JSON.parse(r.text);
+        loadPostList();
+        log('已加载 ' + blogData.length + ' 篇文章', 'ok');
+    }).catch(function(e){
+        log('加载失败: ' + e.message, 'err');
+    });
+});
+
+/* 发布 / 保存文章 */
+$('btnPublish').addEventListener('click', function(){
+    var title = $('pTitle').value.trim();
+    var content = $('mdContent').value;
+    if (!title) { log('请填写文章标题', 'err'); return; }
+    if ($('mdContent').disabled) {
+        // 旧版 HTML 文章：只更新元数据
+        var p = blogData[editingIndex];
+        if (!p) { log('编辑状态异常，请重新加载列表', 'err'); return; }
+        p.title = title;
+        p.date = $('pDate').value || p.date;
+        p.tags = $('pTags').value.split(/[,，]/).map(function(s){ return s.trim(); }).filter(Boolean);
+        p.excerpt = $('pExcerpt').value.trim();
+        ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台更新：修改文章信息《' + title + '》')
+            .then(function(){ log('文章信息已更新并发布', 'ok'); resetEditor(); })
+            .catch(function(e){ log('保存失败: ' + e.message, 'err'); });
+        return;
+    }
+    if (!content.trim()) { log('正文不能为空', 'err'); return; }
+
+    var isNew = editingIndex < 0;
+    var slug = $('pSlug').value.trim();
+    if (isNew) {
+        if (!slug) slug = new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Date.now().toString(36);
+        if (!/^[A-Za-z0-9\-_]+$/.test(slug)) { log('文件名只能用英文、数字、横杠、下划线', 'err'); return; }
+    } else {
+        slug = blogData[editingIndex].file.replace(/^posts\//, '').replace(/\.md$/i, '');
+    }
+
+    var entry = {
+        title: title,
+        date: $('pDate').value || new Date().toISOString().slice(0, 10),
+        tags: $('pTags').value.split(/[,，]/).map(function(s){ return s.trim(); }).filter(Boolean),
+        excerpt: $('pExcerpt').value.trim() || (content.replace(/[#*`>\-\[\]!()]/g, '').slice(0, 80) + '...'),
+        file: 'posts/' + slug + '.md'
+    };
+
+    log((isNew ? '正在发布' : '正在保存') + ' ' + entry.file + ' ...', 'info');
+
+    ghPutText(entry.file, content, '后台发布：' + title)
+        .then(function(){
+            if (isNew) {
+                // 检查 blog.json 是否已有同名条目（重复发布会复用文件名）
+                return ghGetText('data/blog.json').then(function(r){
+                    blogData = JSON.parse(r.text);
+                    blogData = blogData.filter(function(p){ return p.file !== entry.file; });
+                    blogData.unshift(entry);
+                    return ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台发布：新增文章《' + title + '》');
+                });
+            } else {
+                blogData[editingIndex] = entry;
+                return ghPutText('data/blog.json', JSON.stringify(blogData, null, 2), '后台更新：编辑文章《' + title + '》');
+            }
+        })
+        .then(function(){
+            log('文章已发布！约 1 分钟后 Cloudflare 自动上线', 'ok');
+            loadPostList();
+            resetEditor();
+        })
+        .catch(function(e){ log('发布失败: ' + e.message + '（正文文件可能已提交，可重试或到 GitHub 查看）', 'err'); });
+});
+
+/* 编辑器插图：上传后插入 markdown 图片语法 */
+$('btnInsertImg').addEventListener('click', function(){ $('imgPicker').click(); });
+
+$('imgPicker').addEventListener('change', function(){
+    var files = Array.from($('imgPicker').files || []);
+    if (!files.length) return;
+    var ta = $('mdContent');
+    var pos = ta.selectionStart || ta.value.length;
+    var done = 0;
+    files.forEach(function(f){
+        var name = f.name.replace(/\s+/g, '-');
+        var path = 'images/' + Date.now().toString(36) + '-' + name;
+        fileToB64(f).then(function(b64){
+            return ghPutBinary(path, b64, '后台上传图片: ' + name);
+        }).then(function(){
+            var ins = '![](' + path + ')\n\n';
+            ta.value = ta.value.slice(0, pos) + ins + ta.value.slice(pos);
+            pos += ins.length;
+            done++;
+            log('图片已上传并插入: ' + path, 'ok');
+            if (done === files.length) $('imgPicker').value = '';
+        }).catch(function(e){
+            log('图片 ' + f.name + ' 上传失败: ' + e.message, 'err');
+            done++;
+        });
+    });
+});
+
+/* ================== 文件上传 ================== */
+$('btnUpload').addEventListener('click', function(){
+    var files = Array.from($('filePicker').files || []);
+    if (!files.length) { log('请先选择文件', 'err'); return; }
+    var dir = $('upPath').value.trim() || 'images/';
+    if (dir.slice(-1) !== '/') dir += '/';
+
+    files.forEach(function(f){
+        var name = f.name.replace(/\s+/g, '-');
+        var path = dir + name;
+        log('正在上传 ' + path + ' (' + (f.size / 1024 / 1024).toFixed(2) + ' MB) ...', 'info');
+        fileToB64(f).then(function(b64){
+            return ghPutBinary(path, b64, '后台上传文件: ' + name);
+        }).then(function(){
+            var div = document.createElement('div');
+            div.className = 'upload-result';
+            div.innerHTML = '<span style="color:#64ffda;">✓ ' + esc(path) + '</span>'
+                + '<button class="btn small" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.slice(1).trim());this.textContent=\'已复制\'">复制路径</button>';
+            $('uploadResults').appendChild(div);
+            log('上传成功: ' + path, 'ok');
+        }).catch(function(e){
+            log('上传失败 ' + f.name + ': ' + e.message, 'err');
+        });
+    });
+});
+</script>
+</body>
+</html>
