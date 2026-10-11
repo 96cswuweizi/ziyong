@@ -1,0 +1,87 @@
+{
+  "name": "我的源列表",
+  "version": 2,
+  "sources": [
+    {
+      "name": "桃花",
+      "url": "https://thzy1.me/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "森林",
+      "url": "https://slapibf.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "ikun",
+      "url": "https://ikunzyapi.com/api.php/provide/vod",
+      "isAdult": false
+    },
+    {
+      "name": "量子",
+      "url": "https://cj.lziapi.com/api.php/provide/vod",
+      "isAdult": false
+    },
+    {
+      "name": "暴风",
+      "url": "https://bfzyapi.com/api.php/provide/vod",
+      "isAdult": false
+    },
+    {
+      "name": "小鸡",
+      "url": "https://api.xiaojizy.live/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "越南",
+      "url": "https://vnzyz.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "奶香香",
+      "url": "https://naixxzy.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "大奶子",
+      "url": "https://apidanaizi.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "成人18+",
+      "url": "http://91md.me/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "115",
+      "url": "https://155api.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "精品",
+      "url": "https://www.jingpinx.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "souav",
+      "url": "https://api.souavzy.vip/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "滴滴",
+      "url": "https://api.ddapi.cc/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "乐播",
+      "url": "https://lbapi9.com/api.php/provide/vod",
+      "isAdult": true
+    },
+    {
+      "name": "ck",
+      "url": "https://ckzy.me/api.php/provide/vod",
+      "isAdult": true
+    }
+  ],
+  "liveSources": []
+}
